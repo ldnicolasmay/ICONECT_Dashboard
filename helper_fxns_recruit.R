@@ -298,29 +298,3 @@ rl_add_total_row <- function(df) {
 #--==##@    #==-==#    @##==---==##@   #   @##==---==##@    #==-==#    @##==--#
 #==##@    #==-- --==#    @##==---==##@   @##==---==##@    #==-- --==#    @##==#
 ###@    #==--  :  --==#    @##==---==##@##==---==##@    #==--  :  --==#    @###
-
-# ARCHIVE FUNCTION
-# # _ Determines index of which sector user has clicked in
-# point_in_sector <- function(x, y, sector_vec) {
-#   
-#   sector_vec_sum <- sum(sector_vec)
-#   sector_vec_cumsum <- cumsum(sector_vec)
-#   sectors <- list()
-#   theta_1_rad <- 0.00
-#   theta_2_rad <- 0.00
-#   pt_theta <- ifelse(y >= 0, atan2(y, x), pi + (pi + atan2(y, x)))
-#   pt_hypot <- sqrt(x^2 + y^2)
-#   
-#   for (i in seq_along(sector_vec)) {
-#     sectors[[i]] <- list(
-#       theta_1_rad = ifelse(i > 1L, sectors[[i-1L]]$theta_2_rad, 0),
-#       theta_2_rad = sector_vec_cumsum[i] / sector_vec_sum * 2 * pi
-#     )
-#     if (sectors[[i]]$theta_1_rad < pt_theta && 
-#         pt_theta < sectors[[i]]$theta_2_rad && 
-#         pt_hypot <= 1)
-#       return(i)
-#   }
-#   return(integer(0))
-#   
-# }

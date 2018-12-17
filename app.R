@@ -29,9 +29,6 @@ DT_OPTIONS <- list(paging = FALSE,
                    ordering = FALSE,
                    info = FALSE)
 
-# _ Source helper functions ----
-# source('recruit_helper_fxns.R')
-
 # _ Colors ----
 
 # dim_factor <- 0.9
@@ -151,13 +148,7 @@ ui <- dashboardPage(
                 box( plotOutput('recruit_lead_summ_or_plot',
                                 click = 'plot_click'),
                      width = PLOT_WIDTH,
-                     height = PLOT_HEIGHT_LEAD + 25 ) #,
-                # box( verbatimTextOutput('x2'), width = 12 ),
-                # box( verbatimTextOutput('x3'), width = 12),
-                # box( verbatimTextOutput('x4'), width = 12),
-                # box( DT::dataTableOutput('x5'), 
-                #      width = 12, height = 250),
-                # box( verbatimTextOutput('x6'), width = 12)
+                     height = PLOT_HEIGHT_LEAD + 25 )
               ),
               fluidRow(
                 box( h3('Recruitment Statuses'), width = 12),
@@ -331,14 +322,6 @@ server <- function(input, output, session) {
     readFunc = readRDS
   )
   
-  # # _ _ Load raw telephone screening data ----
-  # telscrn <- reactiveFileReader(
-  #   intervalMillis = 1000 * 60 * 60, # 1 hour
-  #   filePath = './rds/telscrn.Rds',
-  #   session = NULL,
-  #   readFunc = readRDS
-  # )
-  
   # _ _ Load telscrn eligibility summary data ----
   telscrn_elg_summ_mi <- reactiveFileReader(
     intervalMillis = 1000 * 60 * 60, # 1 hour
@@ -401,18 +384,7 @@ server <- function(input, output, session) {
   
   # _ _ Recruitment tables ----
   
-  # # input_plot_click <- reactive(input$plot_click)
-  # recruit_lead_summ_or_tbl_row_selex <- reactive({
-  #   temp <- input$recruit_lead_summ_or_tbl_rows_selected # c(3, 1)
-  #   # temp <- ifelse(!is.null(input_plot_click()),
-  #   #               temp, NULL)
-  #   return(temp)
-  # })
-  
   output$recruit_status_summ_mi_tbl <- DT::renderDataTable(
-    # recruit_status_summ_mi %>% 
-    #   select(recruit_stat_txt, n) %>% 
-    #   rename(`Recruitment Status` = recruit_stat_txt)
     rename(
       select(
         recruit_status_summ_mi(),
@@ -657,65 +629,6 @@ server <- function(input, output, session) {
       scale_fill_manual(values = colors_telescrn_en) +
       theme(legend.position = 'bottom')
   }, height = PLOT_HEIGHT_LEAD)
-  
-  # # _ Simple text fields ----
-  # output$lead_categs_descrip <- renderText()
-  
-  # # _ Table => Plot interaction ----
-  # output$x2 <- renderText({
-  # str1 <- paste0(input$recruit_lead_summ_or_tbl_rows_selected,
-  #                sep = '-')
-  # str2 <- paste0(input$recruit_lead_summ_mi_tbl_rows_selected,
-  #                sep = '-')
-  # 
-  #     paste0(
-  #       str1,
-  #       str2,
-  #       sep = "<br/>"
-  #     )
-  # 
-  # })
-  # output$x3 <- renderText({
-  #   paste(# "x:", round(as.numeric(input$plot_hover$x), 2),
-  #         # "y:", round(as.numeric(input$plot_hover$y), 2),
-  #         names(input$plot_hover) #,
-  #         # unlist(input$plot_hover)
-  #         )
-  # })
-  # output$x3 <- renderPrint({
-  #   str(input$plot_click)
-  # })
-  # output$x4 <- renderPrint({
-  #   ifelse(!is.null(input$plot_click),
-  #          paste(round(as.numeric(input$plot_click$x), 2), 
-  #                round(as.numeric(input$plot_click$y), 2),
-  #                point_in_sector(input$plot_click$x, 
-  #                                input$plot_click$y,
-  #                                recruit_lead_summ_or()$n)),
-  #          NA_character_
-  #   )
-  # })
-  # output$x5 <- DT::renderDataTable(
-  #   DT::datatable(
-  #     rename(
-  #       .data = select(
-  #         .data =
-  #           recruit_lead_summ_or(),
-  #         lead_categ_txt, n
-  #       ),
-  #       `Lead Category` = lead_categ_txt
-  #     ),
-  #     rownames = FALSE,
-  #     options = DT_OPTIONS,
-  #     selection = 
-  #       list(target = "row",
-  #            selected = recruit_lead_summ_or_tbl_row_selex())
-  #   ),
-  #   server = FALSE
-  # )
-  # output$x6 <- renderPrint({
-  #   recruit_lead_summ_or_tbl_row_selex()
-  # })
   
 }
 

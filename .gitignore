@@ -6,6 +6,7 @@ config.R
 old_app.R
 retrieve_box_recruit_data.R
 color_scratchpad.R
+point_click_circle_sector.R
 *.xlsx
 *.csv
 *.Rds
