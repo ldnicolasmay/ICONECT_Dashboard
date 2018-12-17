@@ -1,0 +1,154 @@
+# telscrn_helper_fxns.R
+
+# TELEPHONE SCREENING DATA HELPER FUNCTIONS
+
+
+# **************************************** ----
+# CLEAN TELEPHONE SCREENING DATA ----
+
+arch_select_fields <- function(df) { 
+  df %>% 
+    dplyr::select(ts_sid = rm_sid,  # participant ID
+                  ts_dat,     # tel screen date
+                  ts_elg,     # tel screen elibility 
+                  ts_en,      # tel screen ineligibility reason
+                  ts_en2,     # tel screen inelig. 'other' text
+                  # ts_en3,     # tel screen inelig. 'multiple' text
+                  telephone_screening_complete # tel screen form complete?
+    )
+}
+
+curr_select_fields <- function(df) {
+  df %>% 
+    dplyr::select(ts_sid,     # participant ID
+                  ts_dat,     # tel screen date
+                  ts_elg,     # tel screen elibility
+                  ts_en___1,  # tel screen ineligibility reason, dummy 1
+                  ts_en___2,  # tel screen ineligibility reason, dummy 2
+                  ts_en___3,  # tel screen ineligibility reason, dummy 3
+                  ts_en___4,  # tel screen ineligibility reason, dummy 4
+                  ts_en___5,  # tel screen ineligibility reason, dummy 5
+                  ts_en2,     # tel screen inelig. 'other' text
+                  telephone_screening_complete # tel screen form complete?
+    )
+}
+
+
+# **************************************** ----
+# JOIN TELEPHONE SCREENING DATA ----
+
+# _ Convert archive `ts_en` to dummy variables ----
+create_ts_en_dummy_vars <- function(df) {
+  df %>% 
+    dplyr::mutate(
+      ts_en___1 = dplyr::case_when(
+        ts_en == 1L ~ 1L,
+        TRUE ~ 0L),
+      ts_en___2 = dplyr::case_when(
+        ts_en == 2L ~ 1L,
+        TRUE ~ 0L),
+      ts_en___3 = dplyr::case_when(
+        ts_en == 3L ~ 1L,
+        TRUE ~ 0L),
+      ts_en___4 = dplyr::case_when(
+        TRUE ~ 0L),
+      ts_en___5 = dplyr::case_when(
+        ts_en == 4L ~ 1L,
+        TRUE ~ 0L)
+    ) %>% 
+    dplyr::select(-ts_en)
+}
+
+# _ Bind rows of df_telscrn_arch + df_telscrn_curr; Order fields ----
+bind_arch_curr <- function(df_arch, df_curr) {
+  dplyr::bind_rows(df_arch, df_curr) %>% 
+    dplyr::select(ts_sid, ts_dat,
+                  ts_elg,
+                  ts_en___1, ts_en___2, ts_en___3, ts_en___4, ts_en___5,
+                  ts_en2,
+                  telephone_screening_complete
+    )
+}
+
+
+# **************************************** ----
+# MUTATE TELEPHONE SCREENING DATA ----
+
+# _ Add week numbers (and week labels) ----
+add_week_numbers <- function(df) { 
+  ts_dat_start = as.Date('2018-07-01')
+  df %>% 
+    dplyr::mutate(ts_dat_week = 
+                    # # Option 1:
+                    # (lubridate::interval(ts_dat_start, ts_dat) %/%
+                    #    lubridate::weeks(1))) %>%
+                    # Option 2:
+                    floor(
+                      lubridate::interval(ts_dat_start, ts_dat) /
+                        lubridate::dweeks(1)
+                    )) %>% 
+    dplyr::mutate(ts_dat_week_lab = 
+                    ts_dat_start + lubridate::dweeks(ts_dat_week))
+}
+
+# _ Mutate ineligibilty text field ----
+# Based on `ts_en___*` dummy variables
+mutate_ts_en_txt_field <- function(df) {
+  df %>% 
+    dplyr::rowwise() %>%
+    dplyr::mutate(ts_en_txt =
+                    paste0(c('Medical', 
+                             'Social', 
+                             'Not Interested', 
+                             'Age', 
+                             'Other')[
+                               as.logical(c(ts_en___1, 
+                                            ts_en___2, 
+                                            ts_en___3, 
+                                            ts_en___4, 
+                                            ts_en___5))
+                               ], collapse = ', ')) %>% 
+    dplyr::mutate(ts_en_txt = dplyr::case_when(
+      ts_en_txt != '' ~ ts_en_txt,
+      ts_en_txt == '' ~ NA_character_
+    )) %>% 
+    dplyr::ungroup() # strip off rowwise nature
+}
+
+# _ Mutate eligibility text fields to augment `ts_elg`: `ts_elg_txt` ----
+mutate_ts_elg_txt_field <- function(df) {
+  df %>% 
+    dplyr::mutate(ts_elg_txt = dplyr::case_when(
+      ts_elg == 0 ~ 'No',
+      ts_elg == 1 ~ 'Yes',
+      ts_elg == 2 ~ 'Not sure',
+      TRUE ~ NA_character_
+    ))
+}
+
+
+###@    #==--  :  --==#    @##==---==##@##==---==##@    #==--  :  --==#    @###
+#==##@    #==-- --==#    @##==---==##@   @##==---==##@    #==-- --==#    @##==#
+#--==##@    #==-==#    @##==---==##@   #   @##==---==##@    #==-==#    @##==--#
+#=---==##@    #=#    @##==---==##@    #=#    @##==---==##@    #=#    @##==---=#
+##==---==##@   #   @##==---==##@    #==-==#    @##==---==##@   #   @##==---==##
+#@##==---==##@   @##==---==##@    #==-- --==#    @##==---==##@   @##==---==##@#
+#  @##==---==##@##==---==##@    EXTRA  :  SPACE    @##==---==##@##==---==##@  #
+#@##==---==##@   @##==---==##@    #==-- --==#    @##==---==##@   @##==---==##@#
+##==---==##@   #   @##==---==##@    #==-==#    @##==---==##@   #   @##==---==##
+#=---==##@    #=#    @##==---==##@    #=#    @##==---==##@    #=#    @##==---=#
+#--==##@    #==-==#    @##==---==##@   #   @##==---==##@    #==-==#    @##==--#
+#==##@    #==-- --==#    @##==---==##@   @##==---==##@    #==-- --==#    @##==#
+###@    #==--  :  --==#    @##==---==##@##==---==##@    #==--  :  --==#    @###
+#==##@    #==-- --==#    @##==---==##@   @##==---==##@    #==-- --==#    @##==#
+#--==##@    #==-==#    @##==---==##@   #   @##==---==##@    #==-==#    @##==--#
+#=---==##@    #=#    @##==---==##@    #=#    @##==---==##@    #=#    @##==---=#
+##==---==##@   #   @##==---==##@    #==-==#    @##==---==##@   #   @##==---==##
+#@##==---==##@   @##==---==##@    #==-- --==#    @##==---==##@   @##==---==##@#
+#  @##==---==##@##==---==##@    EXTRA  :  SPACE    @##==---==##@##==---==##@  #
+#@##==---==##@   @##==---==##@    #==-- --==#    @##==---==##@   @##==---==##@#
+##==---==##@   #   @##==---==##@    #==-==#    @##==---==##@   #   @##==---==##
+#=---==##@    #=#    @##==---==##@    #=#    @##==---==##@    #=#    @##==---=#
+#--==##@    #==-==#    @##==---==##@   #   @##==---==##@    #==-==#    @##==--#
+#==##@    #==-- --==#    @##==---==##@   @##==---==##@    #==-- --==#    @##==#
+###@    #==--  :  --==#    @##==---==##@##==---==##@    #==--  :  --==#    @###

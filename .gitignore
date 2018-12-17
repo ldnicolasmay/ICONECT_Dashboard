@@ -1,0 +1,11 @@
+~/.boxr-oauth
+.Rproj.user
+.DS_Store
+.Rhistory
+config.R
+old_app.R
+retrieve_box_recruit_data.R
+color_scratchpad.R
+*.xlsx
+*.csv
+*.Rds
