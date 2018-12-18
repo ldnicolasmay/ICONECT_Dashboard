@@ -33,7 +33,7 @@ recruit_data_or <- readxl::read_xlsx(
   col_types = 'text'
 ) %>% na_if('?')
 
-# Put recruit_data_mi, recruit_data_or dfs in a list ----
+# Put recruit_data_mi, recruit_data_or dfs in a named list ----
 recruit_data <- list(mi = recruit_data_mi, 
                      or = recruit_data_or)
 
@@ -52,10 +52,10 @@ recruit_data <- map(recruit_data, cast_date_cols)
 recruit_data <- map(recruit_data, binarize_notelig_fields)
 
 # _ Capitalize all `Recruitment Status` values ----
-recruit_data <- 
-  map(recruit_data,
-      ~ mutate(.x, `Recruitment Status` = toupper(`Recruitment Status`))
-  )
+recruit_data <- map(recruit_data,
+                    ~ .x %>% 
+                      mutate(`Recruitment Status` = 
+                               toupper(`Recruitment Status`)))
 
 
 # **************************************** ----

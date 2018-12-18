@@ -6,6 +6,7 @@
 # **************************************** ----
 # USEFUL LIBRARIES ----
 library(dplyr)
+library(purrr)
 
 
 # **************************************** ----
@@ -99,106 +100,112 @@ df_telscrn_arch_or <- create_ts_en_dummy_vars(df_telscrn_arch_or)
 df_telscrn_mi <- bind_arch_curr(df_telscrn_arch_mi, df_telscrn_curr_mi)
 df_telscrn_or <- bind_arch_curr(df_telscrn_arch_or, df_telscrn_curr_or)
 
+# Put df_telscrn_mi, df_telscrn_or dfs in a named list ----
+df_telscrn <- list('mi' = df_telscrn_mi,
+                   'or' = df_telscrn_or)
+
 # _ Remove unneeded dfs ----
 rm(df_telscrn_arch_mi); rm(df_telscrn_arch_or)
 rm(df_telscrn_curr_mi); rm(df_telscrn_curr_or)
-
+rm(df_telscrn_mi); rm(df_telscrn_or)
 
 # **************************************** ----
 # MUTATE TELEPHONE SCREENING DATA ----
 
 # _ Mutate week numbers (and week labels) ----
-df_telscrn_mi <- add_week_numbers(df_telscrn_mi)
-df_telscrn_or <- add_week_numbers(df_telscrn_or)
+df_telscrn <- map(df_telscrn, add_week_numbers)
 
 # _ Mutate ineligibilty text field: ts_en_txt ----
 # Based on `ts_en___*` dummy variables
-df_telscrn_mi <- mutate_ts_en_txt_field(df_telscrn_mi)
-df_telscrn_or <- mutate_ts_en_txt_field(df_telscrn_or)
+df_telscrn <- map(df_telscrn, mutate_ts_en_txt_field)
 
 # _ Mutate eligibility text fields to augment `ts_elg`: `ts_elg_txt` ----
-df_telscrn_mi <- mutate_ts_elg_txt_field(df_telscrn_mi)
-df_telscrn_or <- mutate_ts_elg_txt_field(df_telscrn_or)
+df_telscrn <- map(df_telscrn, mutate_ts_elg_txt_field)
 
-# _ Factor-ize and order factors of `ts_elg_txt` ----
-df_telscrn_mi$ts_elg_txt <- 
-  factor(df_telscrn_mi$ts_elg_txt, levels = c('No', 'Not sure', 'Yes'))
-df_telscrn_or$ts_elg_txt <- 
-  factor(df_telscrn_or$ts_elg_txt, levels = c('No', 'Not sure', 'Yes'))
-
-# _ Factor-ize and order factors of `ts_en_txt` ----
-df_telscrn_mi$ts_en_txt <- 
-  factor(df_telscrn_mi$ts_en_txt,
-         levels = c('Social', 'Medical', 'Not Interested', 'Age', 'Other'))
-df_telscrn_or$ts_en_txt <- 
-  factor(df_telscrn_or$ts_en_txt,
-         levels = c('Social', 'Medical', 'Not Interested', 'Age', 'Other'))
+# # _ Factor-ize and order factors of `ts_elg_txt` ----
+# df_telscrn_mi$ts_elg_txt <- 
+#   factor(df_telscrn_mi$ts_elg_txt, levels = c('No', 'Not sure', 'Yes'))
+# df_telscrn_or$ts_elg_txt <- 
+#   factor(df_telscrn_or$ts_elg_txt, levels = c('No', 'Not sure', 'Yes'))
+# 
+# # _ Factor-ize and order factors of `ts_en_txt` ----
+# df_telscrn_mi$ts_en_txt <- 
+#   factor(df_telscrn_mi$ts_en_txt,
+#          levels = c('Social', 'Medical', 'Not Interested', 'Age', 'Other'))
+# df_telscrn_or$ts_en_txt <- 
+#   factor(df_telscrn_or$ts_en_txt,
+#          levels = c('Social', 'Medical', 'Not Interested', 'Age', 'Other'))
 
 
 # **************************************** ----
 # SUMMARIZE TELEPHONE SCREENING DATA ----
 
 # _ Eligibility status summary tables ----
-
-telscrn_elg_summ_mi <- df_telscrn_mi %>% 
-  dplyr::group_by(ts_elg_txt) %>% 
-  dplyr::summarize(n = dplyr::n())
-telscrn_elg_summ_or <- df_telscrn_or %>% 
-  dplyr::group_by(ts_elg_txt) %>% 
-  dplyr::summarize(n = dplyr::n())
+telscrn_elg_summ <- map(df_telscrn,
+                        ~ .x %>% 
+                          group_by(ts_elg_txt) %>% 
+                          summarize(n = dplyr::n()))
 
 # _ Eligibility status summary by week tables ----
-
-telscrn_elg_summ_week_mi <- df_telscrn_mi %>% 
-  dplyr::filter(!is.na(ts_elg_txt)) %>% 
-  dplyr::group_by(ts_dat_week_lab, ts_elg_txt) %>% 
-  dplyr::summarize(n = dplyr::n())
-telscrn_elg_summ_week_or <- df_telscrn_or %>% 
-  dplyr::filter(!is.na(ts_elg_txt)) %>% 
-  dplyr::group_by(ts_dat_week_lab, ts_elg_txt) %>% 
-  dplyr::summarize(n = dplyr::n())
+telscrn_elg_summ_week <- map(df_telscrn,
+                             ~ .x %>% 
+                               filter(!is.na(ts_elg_txt)) %>% 
+                               group_by(ts_dat_week_lab, ts_elg_txt) %>% 
+                               summarize(n = n()))
 
 # _ Ineligibility reason summary tables ----
-
-telscrn_en_summ_mi <- df_telscrn_mi %>% 
-  dplyr::filter(ts_elg != 1) %>% 
-  dplyr::group_by(ts_en_txt) %>% 
-  dplyr::summarize(n = dplyr::n())
-telscrn_en_summ_or <- df_telscrn_or %>% 
-  dplyr::filter(ts_elg != 1) %>% 
-  dplyr::group_by(ts_en_txt) %>% 
-  dplyr::summarize(n = dplyr::n())
+telscrn_en_summ <- map(df_telscrn,
+                       ~ .x %>% 
+                         filter(ts_elg != 1) %>% 
+                         group_by(ts_en_txt) %>% 
+                         summarize(n = n()))
 
 # _ Ineligibility reason summary by week tables ----
+telscrn_en_summ_week <- map(df_telscrn,
+                            ~ .x %>% 
+                              filter(!is.na(ts_en_txt)) %>% 
+                              group_by(ts_dat_week_lab, ts_en_txt) %>% 
+                              summarize(n = n()))
+  
+  
+  # **************************************** ----
+# RECRUITMENT STATUS + LEAD SUMMARY TABLES ----
 
-telscrn_en_summ_week_mi <- df_telscrn_mi %>% 
-  dplyr::filter(!is.na(ts_en_txt)) %>% 
-  dplyr::group_by(ts_dat_week_lab, ts_en_txt) %>% 
-  dplyr::summarize(n = dplyr::n())
-telscrn_en_summ_week_or <- df_telscrn_or %>% 
-  dplyr::filter(!is.na(ts_en_txt)) %>% 
-  dplyr::group_by(ts_dat_week_lab, ts_en_txt) %>% 
-  dplyr::summarize(n = dplyr::n())
+# _ Eligibility status ----
+
+# _ _ Add eligibility status proportion column ----
+telscrn_elg_summ <- map(telscrn_elg_summ, telscrn_elg_add_proportion_column)
+
+# _ _ Add eligibility status total row ----
+telscrn_elg_summ <- map(telscrn_elg_summ, telscrn_elg_add_total_row)
+
+# _ Ineligibility reason ----
+
+# _ _ Add ineligibility reason proportion column ----
+telscrn_en_summ <- map(telscrn_en_summ, telscrn_en_add_proportion_column)
+
+# _ _ Add ineligibility reason total row ----
+telscrn_en_summ <- map(telscrn_en_summ, telscrn_en_add_total_row)
 
 
 # **************************************** ----
 # SAVE DATA TO RDS ----
 
 # _ Eligibility status summary tables ----
-saveRDS(telscrn_elg_summ_mi, 'rds/telscrn_elg_summ_mi.Rds')
-saveRDS(telscrn_elg_summ_or, 'rds/telscrn_elg_summ_or.Rds')
+iwalk(telscrn_elg_summ,
+      ~ saveRDS(.x, paste0('rds/telscrn_elg_summ_', .y, '.Rds')))
 
 # _ Eligibility status summary by week tables ----
-saveRDS(telscrn_elg_summ_week_mi, 'rds/telscrn_elg_summ_week_mi.Rds')
-saveRDS(telscrn_elg_summ_week_or, 'rds/telscrn_elg_summ_week_or.Rds')
+iwalk(telscrn_elg_summ_week,
+      ~ saveRDS(.x, paste0('rds/telscrn_elg_summ_week_', .y, '.Rds')))
 
 # _ Ineligibility reason summary tables ----
-saveRDS(telscrn_en_summ_mi, 'rds/telscrn_en_summ_mi.Rds')
-saveRDS(telscrn_en_summ_or, 'rds/telscrn_en_summ_or.Rds')
+iwalk(telscrn_elg_summ,
+      ~ saveRDS(.x, paste0('rds/telscrn_en_summ_', .y, '.Rds')))
 
 # _ Ineligibility reason summary by week tables ----
-saveRDS(telscrn_en_summ_week_mi, 'rds/telscrn_en_summ_week_mi.RDS')
-saveRDS(telscrn_en_summ_week_or, 'rds/telscrn_en_summ_week_or.RDS')
+iwalk(telscrn_elg_summ,
+      ~ saveRDS(.x, paste0('rds/telscrn_en_summ_week_', .y, '.Rds')))
 
 
 ###@    #==--  :  --==#    @##==---==##@##==---==##@    #==--  :  --==#    @###

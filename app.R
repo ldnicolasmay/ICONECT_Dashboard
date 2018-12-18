@@ -3,7 +3,7 @@
 # Shiny web app dashboard for I-CONECT
 #
 
-# **** ----
+# **************************************** ----
 # LOAD LIBRARIES ----
 library(shiny)
 library(shinydashboard)
@@ -12,7 +12,7 @@ library(ggplot2)
 # library(DT)
 
 
-# **** ----
+# **************************************** ----
 # USEFUL GLOBALS ----
 
 # _ Heights & widths ----
@@ -35,7 +35,7 @@ DT_OPTIONS <- list(paging = FALSE,
 
 # _ _ Recruitment Lead colors ----
 colors_lead_summ_bright_txt <- 
-  c("red", "dodgerblue1", "lightsteelblue2", "green3", "gray30")
+  c("red", "dodgerblue1", "dodgerblue4", "green3", "gray30")
 colors_lead_summ_bright_srgb <- 
   colorspace::sRGB( (t(col2rgb(colors_lead_summ_bright_txt)) / 255) )
 colors_lead_summ_bright <- colorspace::hex( colors_lead_summ_bright_srgb )
@@ -81,7 +81,7 @@ colors_telescrn_en_scrn_bright <-
 # Use when DT table selections do nothing
 colors_telescrn_en <- colors_telescrn_en_scrn_bright
 
-# **** ----
+# **************************************** ----
 # DEFINE UI ----
 ui <- dashboardPage(
   
@@ -288,7 +288,7 @@ ui <- dashboardPage(
   
 )
 
-# **** ----
+# **************************************** ----
 # DEFINE SERVER LOGIC ----
 server <- function(input, output, session) {
   
@@ -383,88 +383,119 @@ server <- function(input, output, session) {
   # _ Render Tables ----
   
   # _ _ Recruitment tables ----
+  output$recruit_status_summ_mi_tbl <- DT::renderDataTable({
+    recruit_status_summ_mi() %>% 
+      select(recruit_stat_txt, recruit_stat_long, n, proportion) %>% 
+      rename(`Recruitment Status Code` = recruit_stat_txt,
+             `Recruitment Status Text` = recruit_stat_long,
+             `Prop` = proportion) %>% 
+      DT::datatable(rownames = FALSE, options = DT_OPTIONS) %>% 
+      DT::formatStyle(
+        columns = 'Recruitment Status Code',
+        target = 'row',
+        backgroundColor = DT::styleEqual(c('TOTAL'), c('#ECF0F5')),
+        fontWeight = DT::styleEqual(c('TOTAL'), c('bold'))
+      )
+  })
   
-  output$recruit_status_summ_mi_tbl <- DT::renderDataTable(
-    rename(
-      select(
-        recruit_status_summ_mi(),
-        recruit_stat_txt, recruit_stat_long, n, proportion
-      ),
-      `Recruitment Status Code` = recruit_stat_txt,
-      `Recruitment Status Text` = recruit_stat_long,
-      `Prop` = proportion
-    ),
-    rownames = FALSE,
-    options = DT_OPTIONS
-  )
+  output$recruit_status_summ_or_tbl <- DT::renderDataTable({
+    recruit_status_summ_or() %>% 
+      select(recruit_stat_txt, recruit_stat_long, n, proportion) %>% 
+      rename(`Recruitment Status Code` = recruit_stat_txt,
+             `Recruitment Status Text` = recruit_stat_long,
+             `Prop` = proportion) %>% 
+      DT::datatable(rownames = FALSE, options = DT_OPTIONS) %>% 
+      DT::formatStyle(
+        columns = 'Recruitment Status Code',
+        target = 'row',
+        backgroundColor = DT::styleEqual(c('TOTAL'), c('#ECF0F5')),
+        fontWeight = DT::styleEqual(c('TOTAL'), c('bold'))
+      )
+  })
   
-  output$recruit_status_summ_or_tbl <- DT::renderDataTable(
-    rename(
-      .data = select(
-        .data = recruit_status_summ_or(),
-        recruit_stat_txt, recruit_stat_long, n, proportion
-      ),
-      `Recruitment Status Code` = recruit_stat_txt,
-      `Recruitment Status Text` = recruit_stat_long,
-      `Prop` = proportion
-    ),
-    rownames = FALSE,
-    options = DT_OPTIONS
-  )
+  output$recruit_lead_summ_mi_tbl <- DT::renderDataTable({
+    recruit_lead_summ_mi() %>% 
+      select(lead_categ_txt, n, proportion) %>% 
+      rename(`Lead Category` = lead_categ_txt,
+             `Prop` = proportion) %>% 
+      DT::datatable(rownames = FALSE, options = DT_OPTIONS) %>% 
+      DT::formatStyle(
+        columns = 'Lead Category',
+        target = 'row',
+        backgroundColor = DT::styleEqual(c('TOTAL'), c('#ECF0F5')),
+        fontWeight = DT::styleEqual(c('TOTAL'), c('bold'))
+      )
+  })
   
-  output$recruit_lead_summ_mi_tbl <- DT::renderDataTable(
-    rename(
-      .data = select(
-        .data = recruit_lead_summ_mi(),
-        lead_categ_txt, n, proportion
-      ),
-      `Lead Category` = lead_categ_txt,
-      `Prop` = proportion
-    ),
-    rownames = FALSE,
-    options = DT_OPTIONS
-  )
-  
-  output$recruit_lead_summ_or_tbl <- DT::renderDataTable(
-    rename(
-      .data = select(
-        .data = recruit_lead_summ_or(),
-        lead_categ_txt, n, proportion
-      ),
-      `Lead Category` = lead_categ_txt,
-      `Prop` = proportion
-    ),
-    rownames = FALSE,
-    options = DT_OPTIONS
-  )
+  output$recruit_lead_summ_or_tbl <- DT::renderDataTable({
+    recruit_lead_summ_or() %>% 
+      select(lead_categ_txt, n, proportion) %>% 
+      rename(`Lead Category` = lead_categ_txt,
+             `Prop` = proportion) %>% 
+      DT::datatable(rownames = FALSE, options = DT_OPTIONS) %>% 
+      DT::formatStyle(
+        columns = 'Lead Category',
+        target = 'row',
+        backgroundColor = DT::styleEqual(c('TOTAL'), c('#ECF0F5')),
+        fontWeight = DT::styleEqual(c('TOTAL'), c('bold'))
+      )
+  })
   
   # _ _ Telephone Screening tables ----
   
   # _ _ _ Eligibility tables ----
-  output$telscrn_elg_summ_or_tbl <- DT::renderDataTable(
-    telscrn_elg_summ_or(),
-    rownames = FALSE,
-    options = DT_OPTIONS
-  )
+  output$telscrn_elg_summ_or_tbl <- DT::renderDataTable({
+    telscrn_elg_summ_or() %>% 
+      rename(`Eligibilty Status` = ts_elg_txt,
+             `Prop` = proportion) %>% 
+      DT::datatable(rownames = FALSE, options = DT_OPTIONS) %>% 
+      DT::formatStyle(
+        columns = 'Eligibilty Status',
+        target = 'row',
+        backgroundColor = DT::styleEqual(c('TOTAL'), c('#ECF0F5')),
+        fontWeight = DT::styleEqual(c('TOTAL'), c('bold'))
+      )
+  })
   
-  output$telscrn_elg_summ_mi_tbl <- DT::renderDataTable(
-    telscrn_elg_summ_mi(),
-    rownames = FALSE,
-    options = DT_OPTIONS
-  )
+  output$telscrn_elg_summ_mi_tbl <- DT::renderDataTable({
+    telscrn_elg_summ_mi() %>% 
+      rename(`Eligibilty Status` = ts_elg_txt,
+             `Prop` = proportion) %>% 
+      DT::datatable(rownames = FALSE, options = DT_OPTIONS) %>% 
+      DT::formatStyle(
+        columns = 'Eligibilty Status',
+        target = 'row',
+        backgroundColor = DT::styleEqual(c('TOTAL'), c('#ECF0F5')),
+        fontWeight = DT::styleEqual(c('TOTAL'), c('bold'))
+      )
+  })
   
   # _ _ _ Ineligibility tables ----
-  output$telscrn_en_summ_or_tbl <- DT::renderDataTable(
-    telscrn_en_summ_or(),
-    rownames = FALSE,
-    options = DT_OPTIONS
-  )
+  output$telscrn_en_summ_or_tbl <- DT::renderDataTable({
+    telscrn_en_summ_or() %>% 
+      rename(`Ineligibility Reason` = ts_en_txt,
+             `Prop` = proportion) %>% 
+      DT::datatable(rownames = FALSE, options = DT_OPTIONS) %>% 
+      DT::formatStyle(
+        columns = 'Ineligibility Reason',
+        target = 'row',
+        backgroundColor = DT::styleEqual(c('TOTAL'), c('#ECF0F5')),
+        fontWeight = DT::styleEqual(c('TOTAL'), c('bold'))
+      )
+  })
   
-  output$telscrn_en_summ_mi_tbl <- DT::renderDataTable(
-    telscrn_en_summ_mi(),
-    rownames = FALSE,
-    options = DT_OPTIONS
-  )
+  output$telscrn_en_summ_mi_tbl <- DT::renderDataTable({
+    telscrn_en_summ_or() %>% 
+      rename(`Ineligibility Reason` = ts_en_txt,
+             `Prop` = proportion) %>% 
+      DT::datatable(rownames = FALSE, options = DT_OPTIONS) %>% 
+      DT::formatStyle(
+        columns = 'Ineligibility Reason',
+        target = 'row',
+        backgroundColor = DT::styleEqual(c('TOTAL'), c('#ECF0F5')),
+        fontWeight = DT::styleEqual(c('TOTAL'), c('bold'))
+      )
+  })
   
   # _ Render Plots ----
   
@@ -536,25 +567,27 @@ server <- function(input, output, session) {
   # _ _ Telephone Screening plots ----
   
   # _ _ _ Eligibility Status plots ----
-  
   output$telscrn_elg_summ_or_plot <- renderPlot({
-    pie(x = telscrn_elg_summ_or()$n,
-        labels = telscrn_elg_summ_or()$ts_elg_txt,
+    telscrn_elg_summ_or = telscrn_elg_summ_or() %>% 
+      dplyr::filter(ts_elg_txt != 'TOTAL')
+    pie(x = telscrn_elg_summ_or$n,
+        labels = telscrn_elg_summ_or$ts_elg_txt,
         col = colors_telescrn_elg,
         main = "Telephone Screening Eligibility",
         radius = 1)
   }, height = PLOT_HEIGHT_LEAD)
   
   output$telscrn_elg_summ_mi_plot <- renderPlot({
-    pie(x = telscrn_elg_summ_mi()$n,
-        labels = telscrn_elg_summ_mi()$ts_elg_txt,
+    telscrn_elg_summ_mi = telscrn_elg_summ_mi() %>% 
+      dplyr::filter(ts_elg_txt != 'TOTAL')
+    pie(x = telscrn_elg_summ_mi$n,
+        labels = telscrn_elg_summ_mi$ts_elg_txt,
         col = colors_telescrn_elg,
         main = "Telephone Screening Eligibility",
         radius = 1)
   }, height = PLOT_HEIGHT_LEAD)
   
   # _ _ _ Weekly Eligibility Status plots ----
-  
   output$telscrn_elg_summ_week_or_plot <- renderPlot({
     ggplot(data = telscrn_elg_summ_week_or(),
            aes(x = ts_dat_week_lab, y = n, fill = ts_elg_txt)) +
@@ -584,18 +617,21 @@ server <- function(input, output, session) {
   }, height = PLOT_HEIGHT_LEAD)
   
   # _ _ _ Ineligibility Reason plots ----
-  
   output$telscrn_en_summ_or_plot <- renderPlot({
-    pie(x = telscrn_en_summ_or()$n,
-        labels = telscrn_en_summ_or()$ts_en_txt,
+    telscrn_en_summ_or = telscrn_en_summ_or() %>% 
+      dplyr::filter(ts_en_txt != 'TOTAL')
+    pie(x = telscrn_en_summ_or$n,
+        labels = telscrn_en_summ_or$ts_en_txt,
         col = colors_telescrn_en,
         main = "Telephone Screening Ineligibility Reason",
         radius = 1)
   }, height = PLOT_HEIGHT_LEAD)
   
   output$telscrn_en_summ_mi_plot <- renderPlot({
-    pie(x = telscrn_en_summ_mi()$n,
-        labels = telscrn_en_summ_mi()$ts_en_txt,
+    telscrn_en_summ_mi = telscrn_en_summ_mi() %>% 
+      dplyr::filter(ts_en_txt != 'TOTAL')
+    pie(x = telscrn_en_summ_mi$n,
+        labels = telscrn_en_summ_mi$ts_en_txt,
         col = colors_telescrn_en,
         main = "Telephone Screening Ineligibility Reason",
         radius = 1)
@@ -632,7 +668,7 @@ server <- function(input, output, session) {
   
 }
 
-# **** ----
+# **************************************** ----
 # RUN THE APP ----
 shinyApp(ui = ui, server = server)
 

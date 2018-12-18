@@ -127,6 +127,40 @@ mutate_ts_elg_txt_field <- function(df) {
 }
 
 
+# **************************************** ----
+# RECRUITMENT STATUS + LEAD SUMMARY TABLES ----
+
+# _ Eligibility status ----
+
+# _ _ Add eligibility status proportion column ----
+telscrn_elg_add_proportion_column <- function(df) {
+  df %>% 
+    dplyr::bind_cols(proportion = format(round(.$n / sum(.$n), 2), 2))
+}
+
+# _ _ Add eligibility status total row ----
+telscrn_elg_add_total_row <- function(df) {
+  df %>% 
+    dplyr::bind_rows(list(ts_elg_txt = 'TOTAL',
+                          n = sum(.$n)))
+}
+
+# _ Ineligibility reason ----
+
+# _ _ Add ineligibility reason proportion column ----
+telscrn_en_add_proportion_column <- function(df) {
+  df %>% 
+    dplyr::bind_cols(proportion = format(round(.$n / sum(.$n), 2), 2))
+}
+
+# _ _ Add ineligibility reason total row ----
+telscrn_en_add_total_row <- function(df) {
+  df %>% 
+    dplyr::bind_rows(list(ts_en_txt = 'TOTAL',
+                          n = sum(.$n)))
+}
+
+
 ###@    #==--  :  --==#    @##==---==##@##==---==##@    #==--  :  --==#    @###
 #==##@    #==-- --==#    @##==---==##@   @##==---==##@    #==-- --==#    @##==#
 #--==##@    #==-==#    @##==---==##@   #   @##==---==##@    #==-==#    @##==--#
