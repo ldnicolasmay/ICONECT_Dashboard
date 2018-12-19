@@ -56,7 +56,7 @@ colors_summ <-
   )
 
 # _ _ Telephone Screening Eligibility colors ----
-colors_telescrn_elg_bright_txt <- c('red2', 'orange', 'green3', 'gray')
+colors_telescrn_elg_bright_txt <- c('red3', 'orange', 'green3', 'gray')
 colors_telescrn_elg_scrn_bright_srgb <- 
   colorspace::sRGB( t(col2rgb(colors_telescrn_elg_bright_txt)) / 255 )
 colors_telescrn_elg_scrn_bright <- 
@@ -70,7 +70,10 @@ colors_telescrn_elg_scrn_bright <-
 colors_telescrn_elg <- colors_telescrn_elg_scrn_bright
 
 # _ _ Telephone Screening Ineligibility Reason colors ---- 
-colors_telescrn_en_bright_srgb <- colorspace::hex2RGB( rainbow(n = 6) )
+# colors_telescrn_en_bright_srgb <- colorspace::hex2RGB( rainbow(n = 6) )
+colors_telescrn_en_bright_srgb <- 
+  colorspace::hex2RGB(c('#d53e4f', '#fc8d59', '#fee08b',
+                        '#e6f598', '#99d594', '#3288bd'))
 colors_telescrn_en_scrn_bright <- 
   colorspace::hex( colors_telescrn_en_bright_srgb )
 # Use when DT table selections interactively colorize pie slices
@@ -485,7 +488,7 @@ server <- function(input, output, session) {
   })
   
   output$telscrn_en_summ_mi_tbl <- DT::renderDataTable({
-    telscrn_en_summ_or() %>% 
+    telscrn_en_summ_mi() %>% 
       rename(`Ineligibility Reason` = ts_en_txt,
              `Prop` = proportion) %>% 
       DT::datatable(rownames = FALSE, options = DT_OPTIONS) %>% 
@@ -573,7 +576,8 @@ server <- function(input, output, session) {
     telscrn_elg_summ_or = telscrn_elg_summ_or() %>% 
       dplyr::filter(ts_elg_txt != 'TOTAL')
     pie(x = telscrn_elg_summ_or$n,
-        labels = telscrn_elg_summ_or$ts_elg_txt,
+        labels = paste0(telscrn_elg_summ_or$ts_elg_txt, ', ',
+                        telscrn_elg_summ_or$n),
         col = colors_telescrn_elg,
         main = "Telephone Screening Eligibility",
         radius = 1)
@@ -583,7 +587,8 @@ server <- function(input, output, session) {
     telscrn_elg_summ_mi = telscrn_elg_summ_mi() %>% 
       dplyr::filter(ts_elg_txt != 'TOTAL')
     pie(x = telscrn_elg_summ_mi$n,
-        labels = telscrn_elg_summ_mi$ts_elg_txt,
+        labels = paste0(telscrn_elg_summ_mi$ts_elg_txt, ', ',
+                        telscrn_elg_summ_mi$n),
         col = colors_telescrn_elg,
         main = "Telephone Screening Eligibility",
         radius = 1)
@@ -623,7 +628,8 @@ server <- function(input, output, session) {
     telscrn_en_summ_or = telscrn_en_summ_or() %>% 
       dplyr::filter(ts_en_txt != 'TOTAL')
     pie(x = telscrn_en_summ_or$n,
-        labels = telscrn_en_summ_or$ts_en_txt,
+        labels = paste0(telscrn_en_summ_or$ts_en_txt, ', ',
+                        telscrn_en_summ_or$n),
         col = colors_telescrn_en,
         main = "Telephone Screening Ineligibility Reason",
         radius = 1)
@@ -633,7 +639,8 @@ server <- function(input, output, session) {
     telscrn_en_summ_mi = telscrn_en_summ_mi() %>% 
       dplyr::filter(ts_en_txt != 'TOTAL')
     pie(x = telscrn_en_summ_mi$n,
-        labels = telscrn_en_summ_mi$ts_en_txt,
+        labels = paste0(telscrn_en_summ_mi$ts_en_txt, ', ',
+                        telscrn_en_summ_mi$n),
         col = colors_telescrn_en,
         main = "Telephone Screening Ineligibility Reason",
         radius = 1)
