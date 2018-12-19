@@ -11,3 +11,6 @@ point_click_circle_sector.R
 *.csv
 *.Rds
 *.png
+archive/*
+rds/*
+screencaps/*

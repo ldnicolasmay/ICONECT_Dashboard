@@ -59,6 +59,22 @@ create_ts_en_dummy_vars <- function(df) {
     select(-ts_en)
 }
 
+# _ Ensure matching types across all fields ----
+ensure_matching_types <- function(df) {
+  df %>% 
+    mutate(ts_sid = as.character(ts_sid),
+           ts_dat = as.Date(ts_dat),
+           ts_elg = as.integer(ts_elg),
+           ts_en___1 = as.integer(ts_en___1),
+           ts_en___2 = as.integer(ts_en___2),
+           ts_en___3 = as.integer(ts_en___3),
+           ts_en___4 = as.integer(ts_en___4),
+           ts_en___5 = as.integer(ts_en___5),
+           ts_en2 = as.character(ts_en2),
+           telephone_screening_complete = 
+             as.integer(telephone_screening_complete))
+}
+
 # _ Bind rows of df_telscrn_arch + df_telscrn_curr; Order fields ----
 bind_arch_curr <- function(df_arch, df_curr) {
   bind_rows(df_arch, df_curr) %>% 
