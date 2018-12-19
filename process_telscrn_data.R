@@ -149,29 +149,59 @@ telscrn_elg_summ <- map(df_telscrn,
 # _ Eligibility status summary by week tables ----
 telscrn_elg_summ_week <- map(df_telscrn,
                              ~ .x %>% 
-                               filter(!is.na(ts_elg_txt)) %>% 
+                               # filter(!is.na(ts_elg_txt)) %>%
                                group_by(ts_dat_week_lab, ts_elg_txt) %>% 
                                summarize(n = n()))
 
 # _ Ineligibility reason summary tables ----
 telscrn_en_summ <- map(df_telscrn,
                        ~ .x %>% 
-                         filter(ts_elg != 1) %>% 
+                         # filter(ts_elg != 1) %>% 
                          group_by(ts_en_txt) %>% 
                          summarize(n = n()))
 
 # _ Ineligibility reason summary by week tables ----
 telscrn_en_summ_week <- map(df_telscrn,
                             ~ .x %>% 
-                              filter(!is.na(ts_en_txt)) %>% 
+                              # filter(!is.na(ts_en_txt)) %>%
                               group_by(ts_dat_week_lab, ts_en_txt) %>% 
                               summarize(n = n()))
-  
-  
-  # **************************************** ----
+
+
+# **************************************** ----
 # RECRUITMENT STATUS + LEAD SUMMARY TABLES ----
 
 # _ Eligibility status ----
+
+# _ _ Add missing ts_elg categories ----
+telscrn_elg_summ <- map(telscrn_elg_summ, telscrn_elg_summ_add_missing_categs)
+
+# _ _ Insert "NA" string into NA row ----
+telscrn_elg_summ <- map(telscrn_elg_summ, telscrn_elg_insert_na_string)
+telscrn_elg_summ_week <-
+  map(telscrn_elg_summ_week, telscrn_elg_insert_na_string)
+
+# _ _ Factorize ----
+telscrn_elg_summ$mi$ts_elg_txt <- factor(telscrn_elg_summ$mi$ts_elg_txt,
+                                         levels = c('No',
+                                                    'Not sure',
+                                                    'Yes',
+                                                    '[NA]'))
+telscrn_elg_summ$or$ts_elg_txt <- factor(telscrn_elg_summ$or$ts_elg_txt,
+                                         levels = c('No',
+                                                    'Not sure',
+                                                    'Yes',
+                                                    '[NA]'))
+telscrn_elg_summ_week$mi$ts_elg_txt <- factor(telscrn_elg_summ_week$mi$ts_elg_txt,
+                                         levels = c('No',
+                                                    'Not sure',
+                                                    'Yes',
+                                                    '[NA]'))
+telscrn_elg_summ_week$or$ts_elg_txt <- factor(telscrn_elg_summ_week$or$ts_elg_txt,
+                                              levels = c('No',
+                                                         'Not sure',
+                                                         'Yes',
+                                                         '[NA]'))
 
 # _ _ Add eligibility status proportion column ----
 telscrn_elg_summ <- map(telscrn_elg_summ, telscrn_elg_add_proportion_column)
@@ -180,6 +210,45 @@ telscrn_elg_summ <- map(telscrn_elg_summ, telscrn_elg_add_proportion_column)
 telscrn_elg_summ <- map(telscrn_elg_summ, telscrn_elg_add_total_row)
 
 # _ Ineligibility reason ----
+
+# _ _ Add missing ts_en categories ----
+telscrn_en_summ <- map(telscrn_en_summ, telscrn_en_summ_add_missing_categs)
+telscrn_en_summ_week <- map(telscrn_en_summ_week, telscrn_en_summ_week_add_missing_categs)
+
+# _ _ Insert "NA" string into NA row ----
+telscrn_en_summ <- map(telscrn_en_summ, telscrn_en_insert_na_string)
+telscrn_en_summ_week <-
+  map(telscrn_en_summ_week, telscrn_en_insert_na_string)
+
+# _ _ Factorize ----
+telscrn_en_summ$mi$ts_en_txt <- factor(telscrn_en_summ$mi$ts_en_txt,
+                                        levels = c('Medical',
+                                                   'Social',
+                                                   'Age',
+                                                   'Not Interested',
+                                                   'Other',
+                                                   '[NA]'))
+telscrn_en_summ$or$ts_en_txt <- factor(telscrn_en_summ$or$ts_en_txt,
+                                        levels = c('Medical',
+                                                   'Social',
+                                                   'Age',
+                                                   'Not Interested',
+                                                   'Other',
+                                                   '[NA]'))
+telscrn_en_summ_week$mi$ts_en_txt <- factor(telscrn_en_summ_week$mi$ts_en_txt,
+                                        levels = c('Medical',
+                                                   'Social',
+                                                   'Age',
+                                                   'Not Interested',
+                                                   'Other',
+                                                   '[NA]'))
+telscrn_en_summ_week$or$ts_en_txt <- factor(telscrn_en_summ_week$or$ts_en_txt,
+                                            levels = c('Medical',
+                                                       'Social',
+                                                       'Age',
+                                                       'Not Interested',
+                                                       'Other',
+                                                       '[NA]'))
 
 # _ _ Add ineligibility reason proportion column ----
 telscrn_en_summ <- map(telscrn_en_summ, telscrn_en_add_proportion_column)
@@ -200,11 +269,11 @@ iwalk(telscrn_elg_summ_week,
       ~ saveRDS(.x, paste0('rds/telscrn_elg_summ_week_', .y, '.Rds')))
 
 # _ Ineligibility reason summary tables ----
-iwalk(telscrn_elg_summ,
+iwalk(telscrn_en_summ,
       ~ saveRDS(.x, paste0('rds/telscrn_en_summ_', .y, '.Rds')))
 
 # _ Ineligibility reason summary by week tables ----
-iwalk(telscrn_elg_summ,
+iwalk(telscrn_en_summ_week,
       ~ saveRDS(.x, paste0('rds/telscrn_en_summ_week_', .y, '.Rds')))
 
 

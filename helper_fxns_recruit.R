@@ -243,6 +243,30 @@ create_recruit_lead_summ <- function(df) {
 # **************************************** ----
 # RECRUITMENT STATUS + LEAD SUMMARY TABLES ----
 
+# _ Insert "NA" string to NA row of `recruit_status_*` dfs ----
+recruit_status_insert_na_string <- function(df) {
+  df %>% 
+    mutate(
+      recruit_stat_txt = case_when(
+        is.na(recruit_stat_txt) ~ "[NA]",
+        TRUE ~ recruit_stat_txt),
+      recruit_stat_long = case_when(
+        is.na(recruit_stat_long) ~ "[NA]",
+        TRUE ~ recruit_stat_long
+      )
+    )
+}
+
+# _ Insert "NA" string to NA row of `recruit_lead_*` dfs ----
+recruit_lead_insert_na_string <- function(df) {
+  df %>% 
+    mutate(
+      lead_categ_txt = case_when(
+        is.na(lead_categ_txt) ~ "[NA]",
+        TRUE ~ lead_categ_txt)
+    )
+}
+
 # _ Add proportion column to recruitment status summary tables ----
 rs_add_proportion_column <- function(df) {
   df %>% 

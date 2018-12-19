@@ -512,7 +512,8 @@ server <- function(input, output, session) {
     recruit_lead_summ_or = recruit_lead_summ_or() %>% 
       dplyr::filter(lead_categ_txt != 'TOTAL')
     pie(x = recruit_lead_summ_or$n, 
-        labels = recruit_lead_summ_or$lead_categ_txt,
+        labels = paste0(recruit_lead_summ_or$lead_categ_txt, ', ',
+                       recruit_lead_summ_or$n),
         col = colors_lead_summ, 
         main = "Lead Categories",
         radius = 1)
@@ -527,7 +528,8 @@ server <- function(input, output, session) {
     recruit_lead_summ_mi = recruit_lead_summ_mi() %>% 
       dplyr::filter(lead_categ_txt != 'TOTAL')
     pie(x = recruit_lead_summ_mi$n, 
-        labels = recruit_lead_summ_mi$lead_categ_txt,
+        labels = paste0(recruit_lead_summ_mi$lead_categ_txt, ', ',
+                        recruit_lead_summ_mi$n),
         col = colors_lead_summ, 
         main = "Lead Categories",
         radius = 1)

@@ -33,9 +33,12 @@ recruit_data_or <- readxl::read_xlsx(
   col_types = 'text'
 ) %>% na_if('?')
 
-# Put recruit_data_mi, recruit_data_or dfs in a named list ----
+# _ Put recruit_data_mi, recruit_data_or dfs in a named list ----
 recruit_data <- list(mi = recruit_data_mi, 
                      or = recruit_data_or)
+
+# _ Remove unneeded dfs ----
+rm(recruit_data_mi, recruit_data_or)
 
 
 # **************************************** ----
@@ -82,6 +85,10 @@ recruit_lead_summ <- map(recruit_status_summ, create_recruit_lead_summ)
 
 # **************************************** ----
 # RECRUITMENT STATUS + LEAD SUMMARY TABLES ----
+
+# _ Insert "NA" string to NA row ----
+recruit_status_summ <- map(recruit_status_summ, recruit_status_insert_na_string)
+recruit_lead_summ <- map(recruit_lead_summ, recruit_lead_insert_na_string)
 
 # _ Mutate proportion column ----
 recruit_status_summ <- map(recruit_status_summ, rs_add_proportion_column)
