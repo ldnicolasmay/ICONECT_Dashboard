@@ -25,13 +25,13 @@ recruit_data_mi <- readxl::read_xlsx(
   sheet = 'All_Data',
   range = 'A1:H3001',
   col_types = 'text'
-) %>% na_if('?')
+) %>% na_if('?') %>% na_if('')
 recruit_data_or <- readxl::read_xlsx(
   path = 'Participant Log--OHSU.xlsx',
   sheet = 'All_Data',
   range = 'A1:H3001',
   col_types = 'text'
-) %>% na_if('?')
+) %>% na_if('?') %>% na_if('')
 
 # _ Put recruit_data_mi, recruit_data_or dfs in a named list ----
 recruit_data <- list(mi = recruit_data_mi, 

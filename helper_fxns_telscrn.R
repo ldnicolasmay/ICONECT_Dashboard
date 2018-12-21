@@ -2,6 +2,7 @@
 
 # TELEPHONE SCREENING DATA HELPER FUNCTIONS
 
+library(dplyr)
 
 # **************************************** ----
 # CLEAN TELEPHONE SCREENING DATA ----
@@ -183,6 +184,14 @@ telscrn_elg_insert_na_string <- function(df) {
     ))
 }
 
+# _ _ Factorize `ts_elg_txt` field ----
+telscrn_elg_factorize_elg_txt <- function(df) {
+  ts_elg_txt_levels = c('No', 'Not sure', 'Yes', '[NA]', 'TOTAL')
+  df %>% 
+    mutate(ts_elg_txt = readr::parse_factor(ts_elg_txt,
+                                            levels = ts_elg_txt_levels))
+}
+
 # _ _ Add eligibility status proportion column ----
 telscrn_elg_add_proportion_column <- function(df) {
   df %>% 
@@ -191,9 +200,12 @@ telscrn_elg_add_proportion_column <- function(df) {
 
 # _ _ Add eligibility status total row ----
 telscrn_elg_add_total_row <- function(df) {
+  ts_elg_txt_levels = c('No', 'Not sure', 'Yes', '[NA]', 'TOTAL')
   df %>% 
-    bind_rows(list(ts_elg_txt = 'TOTAL',
-                   n = sum(.$n)))
+    bind_rows(
+      list(ts_elg_txt = readr::parse_factor('TOTAL',
+                                            levels = ts_elg_txt_levels),
+           n = sum(.$n)))
 }
 
 # _ Ineligibility reason ----
@@ -267,6 +279,20 @@ telscrn_en_insert_na_string <- function(df) {
     ))
 }
 
+# _ _ Factorize `ts_en_txt` field ----
+telscrn_en_factorize_en_txt <- function(df) {
+  ts_en_txt_levels = c('Medical',
+                       'Social',
+                       'Age',
+                       'Not Interested',
+                       'Other',
+                       '[NA]',
+                       'TOTAL')
+  df %>% 
+    mutate(ts_en_txt = readr::parse_factor(ts_en_txt,
+                                           levels = ts_en_txt_levels))
+}
+
 # _ _ Add ineligibility reason proportion column ----
 telscrn_en_add_proportion_column <- function(df) {
   df %>% 
@@ -275,8 +301,16 @@ telscrn_en_add_proportion_column <- function(df) {
 
 # _ _ Add ineligibility reason total row ----
 telscrn_en_add_total_row <- function(df) {
+  ts_en_txt_levels = c('Medical',
+                       'Social',
+                       'Age',
+                       'Not Interested',
+                       'Other',
+                       '[NA]',
+                       'TOTAL')
   df %>% 
-    bind_rows(list(ts_en_txt = 'TOTAL',
+    bind_rows(list(ts_en_txt = readr::parse_factor('TOTAL',
+                                                   levels = ts_en_txt_levels),
                    n = sum(.$n)))
 }
 

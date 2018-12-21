@@ -211,20 +211,6 @@ df_telscrn <- map(df_telscrn, mutate_ts_en_txt_field)
 # _ Mutate eligibility text fields to augment `ts_elg`: `ts_elg_txt` ----
 df_telscrn <- map(df_telscrn, mutate_ts_elg_txt_field)
 
-# # _ Factor-ize and order factors of `ts_elg_txt` ----
-# df_telscrn_mi$ts_elg_txt <- 
-#   factor(df_telscrn_mi$ts_elg_txt, levels = c('No', 'Not sure', 'Yes'))
-# df_telscrn_or$ts_elg_txt <- 
-#   factor(df_telscrn_or$ts_elg_txt, levels = c('No', 'Not sure', 'Yes'))
-# 
-# # _ Factor-ize and order factors of `ts_en_txt` ----
-# df_telscrn_mi$ts_en_txt <- 
-#   factor(df_telscrn_mi$ts_en_txt,
-#          levels = c('Social', 'Medical', 'Not Interested', 'Age', 'Other'))
-# df_telscrn_or$ts_en_txt <- 
-#   factor(df_telscrn_or$ts_en_txt,
-#          levels = c('Social', 'Medical', 'Not Interested', 'Age', 'Other'))
-
 
 # **************************************** ----
 # SUMMARIZE TELEPHONE SCREENING DATA ----
@@ -270,31 +256,10 @@ telscrn_elg_summ <- map(telscrn_elg_summ, telscrn_elg_insert_na_string)
 telscrn_elg_summ_week <-
   map(telscrn_elg_summ_week, telscrn_elg_insert_na_string)
 
-# _ _ Factorize ----
-telscrn_elg_summ$mi$ts_elg_txt <- 
-  factor(telscrn_elg_summ$mi$ts_elg_txt,
-         levels = c('No',
-                    'Not sure',
-                    'Yes',
-                    '[NA]'))
-telscrn_elg_summ$or$ts_elg_txt <- 
-  factor(telscrn_elg_summ$or$ts_elg_txt,
-         levels = c('No',
-                    'Not sure',
-                    'Yes',
-                    '[NA]'))
-telscrn_elg_summ_week$mi$ts_elg_txt <- 
-  factor(telscrn_elg_summ_week$mi$ts_elg_txt,
-         levels = c('No',
-                    'Not sure',
-                    'Yes',
-                    '[NA]'))
-telscrn_elg_summ_week$or$ts_elg_txt <- 
-  factor(telscrn_elg_summ_week$or$ts_elg_txt,
-         levels = c('No',
-                    'Not sure',
-                    'Yes',
-                    '[NA]'))
+# _ _ Factorize `ts_elg_txt` field ----
+telscrn_elg_summ <- map(telscrn_elg_summ, telscrn_elg_factorize_elg_txt)
+telscrn_elg_summ_week <- 
+  map(telscrn_elg_summ_week, telscrn_elg_factorize_elg_txt)
 
 # _ _ Add eligibility status proportion column ----
 telscrn_elg_summ <- map(telscrn_elg_summ, telscrn_elg_add_proportion_column)
@@ -314,35 +279,10 @@ telscrn_en_summ <- map(telscrn_en_summ, telscrn_en_insert_na_string)
 telscrn_en_summ_week <-
   map(telscrn_en_summ_week, telscrn_en_insert_na_string)
 
-# _ _ Factorize ----
-telscrn_en_summ$mi$ts_en_txt <- factor(telscrn_en_summ$mi$ts_en_txt,
-                                       levels = c('Medical',
-                                                  'Social',
-                                                  'Age',
-                                                  'Not Interested',
-                                                  'Other',
-                                                  '[NA]'))
-telscrn_en_summ$or$ts_en_txt <- factor(telscrn_en_summ$or$ts_en_txt,
-                                       levels = c('Medical',
-                                                  'Social',
-                                                  'Age',
-                                                  'Not Interested',
-                                                  'Other',
-                                                  '[NA]'))
-telscrn_en_summ_week$mi$ts_en_txt <- factor(telscrn_en_summ_week$mi$ts_en_txt,
-                                            levels = c('Medical',
-                                                       'Social',
-                                                       'Age',
-                                                       'Not Interested',
-                                                       'Other',
-                                                       '[NA]'))
-telscrn_en_summ_week$or$ts_en_txt <- factor(telscrn_en_summ_week$or$ts_en_txt,
-                                            levels = c('Medical',
-                                                       'Social',
-                                                       'Age',
-                                                       'Not Interested',
-                                                       'Other',
-                                                       '[NA]'))
+# _ _ Factorize `ts_en_txt` field ----
+telscrn_en_summ <- map(telscrn_en_summ, telscrn_en_factorize_en_txt)
+telscrn_en_summ_week <- 
+  map(telscrn_en_summ_week, telscrn_en_factorize_en_txt)
 
 # _ _ Add ineligibility reason proportion column ----
 telscrn_en_summ <- map(telscrn_en_summ, telscrn_en_add_proportion_column)

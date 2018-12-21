@@ -2,6 +2,8 @@
 
 # RECRUITMENT DATA HELPER FUNCTIONS
 
+library(dplyr)
+
 # **************************************** ----
 # CLEAN RECRUITMENT DATA FXNS ----
 
