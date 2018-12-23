@@ -103,12 +103,10 @@ recruit_lead_summ <- map(recruit_lead_summ, rl_add_total_row)
 # SAVE DATA TO RDS ----
 
 # Recruitment status summary tables ----
-iwalk(recruit_status_summ,
-      ~ saveRDS(.x, paste0('rds/recruit_status_summ_', .y, '.Rds')))
+saveRDS(recruit_status_summ, 'rds/recruit_status_summ.Rds')
 
 # Recruitment lead summary tables ----
-iwalk(recruit_lead_summ,
-      ~ saveRDS(.x, paste0('rds/recruit_lead_summ_', .y, '.Rds')))
+saveRDS(recruit_lead_summ, 'rds/recruit_lead_summ.Rds')
 
 
 ###@    #==--  :  --==#    @##==---==##@##==---==##@    #==--  :  --==#    @###

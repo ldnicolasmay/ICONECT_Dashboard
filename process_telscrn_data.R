@@ -224,21 +224,18 @@ telscrn_elg_summ <- map(df_telscrn,
 # _ Eligibility status summary by week tables ----
 telscrn_elg_summ_week <- map(df_telscrn,
                              ~ .x %>% 
-                               # filter(!is.na(ts_elg_txt)) %>%
                                group_by(ts_dat_week_lab, ts_elg_txt) %>% 
                                summarize(n = n()))
 
 # _ Ineligibility reason summary tables ----
 telscrn_en_summ <- map(df_telscrn,
                        ~ .x %>% 
-                         # filter(ts_elg != 1) %>% 
                          group_by(ts_en_txt) %>% 
                          summarize(n = n()))
 
 # _ Ineligibility reason summary by week tables ----
 telscrn_en_summ_week <- map(df_telscrn,
                             ~ .x %>% 
-                              # filter(!is.na(ts_en_txt)) %>%
                               group_by(ts_dat_week_lab, ts_en_txt) %>% 
                               summarize(n = n()))
 
@@ -295,20 +292,16 @@ telscrn_en_summ <- map(telscrn_en_summ, telscrn_en_add_total_row)
 # SAVE DATA TO RDS ----
 
 # _ Eligibility status summary tables ----
-iwalk(telscrn_elg_summ,
-      ~ saveRDS(.x, paste0('rds/telscrn_elg_summ_', .y, '.Rds')))
+saveRDS(telscrn_elg_summ, 'rds/telscrn_elg_summ.Rds')
 
 # _ Eligibility status summary by week tables ----
-iwalk(telscrn_elg_summ_week,
-      ~ saveRDS(.x, paste0('rds/telscrn_elg_summ_week_', .y, '.Rds')))
+saveRDS(telscrn_elg_summ_week, 'rds/telscrn_elg_summ_week.Rds')
 
 # _ Ineligibility reason summary tables ----
-iwalk(telscrn_en_summ,
-      ~ saveRDS(.x, paste0('rds/telscrn_en_summ_', .y, '.Rds')))
+saveRDS(telscrn_en_summ, 'rds/telscrn_en_summ.Rds')
 
 # _ Ineligibility reason summary by week tables ----
-iwalk(telscrn_en_summ_week,
-      ~ saveRDS(.x, paste0('rds/telscrn_en_summ_week_', .y, '.Rds')))
+saveRDS(telscrn_en_summ_week, 'rds/telscrn_en_summ_week.Rds')
 
 
 ###@    #==--  :  --==#    @##==---==##@##==---==##@    #==--  :  --==#    @###
