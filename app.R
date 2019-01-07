@@ -1,6 +1,6 @@
 # app.R
 #
-# Shiny web app dashboard for I-CONECT
+# R Shiny web app dashboard for I-CONECT
 #
 
 # **************************************** ----
