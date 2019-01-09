@@ -18,111 +18,111 @@ get_api_data <- FALSE
 # **************************************** ----
 # GET TELEPHONE SCREENING DATA ----
 
-# # _ Field definition ----
-# 
-# # _ _ Archive fields ----
-# fields_telscrn_arch_raw <-
-#   c('rm_sid',     # participant ID
-#     'ts_dat',     # tel screen date
-#     'ts_elg',     # tel screen elibility
-#     'ts_en',      # tel screen ineligibility reason
-#     'ts_en2',     # tel screen inelig. 'other' text
-#     'telephone_screening_complete' # tel screen form complete?
-#   )
-# fields_telscrn_arch <- fields_telscrn_arch_raw %>% paste(collapse = ',')
-# 
-# # _ _ Current fields ----
-# fields_telscrn_curr_raw <-
-#   c('ts_sid',     # participant ID
-#     'ts_dat',     # tel screen date
-#     'ts_elg',     # tel screen elibility
-#     'ts_en',  # tel screen ineligibility reason, dummy variables
-#     'ts_en2',     # tel screen inelig. 'other' text
-#     'telephone_screening_complete' # tel screen form complete?
-#   )
-# fields_telscrn_curr <- fields_telscrn_curr_raw %>% paste(collapse = ',')
-# 
-# # _ API Data Retrieval ----
-# 
-# # _ _ Archive UM ----
-# if (get_api_data) {
-#   json_telscrn_arch_mi <- RCurl::postForm(
-#     uri=REDCAP_API_URI,
-#     token=REDCAP_API_TOKEN_SCREEN_ARCHIVE_UM,
-#     content='record',
-#     format='json',
-#     type='flat',
-#     fields=fields_telscrn_arch,
-#     rawOrLabel='raw',
-#     rawOrLabelHeaders='raw',
-#     exportCheckboxLabel='false',
-#     exportSurveyFields='false',
-#     exportDataAccessGroups='false',
-#     returnFormat='json'
-#   )
-# }
-# df_telscrn_arch_mi <- jsonlite::fromJSON(json_telscrn_arch_mi) %>% 
-#   dplyr::na_if('')
-# 
-# # _ _ Archive OHSU ----
-# if (get_api_data) {
-#   json_telscrn_arch_or <- RCurl::postForm(
-#     uri=REDCAP_API_URI,
-#     token=REDCAP_API_TOKEN_SCREEN_ARCHIVE_OHSU,
-#     content='record',
-#     format='json',
-#     type='flat',
-#     fields=fields_telscrn_arch,
-#     rawOrLabel='raw',
-#     rawOrLabelHeaders='raw',
-#     exportCheckboxLabel='false',
-#     exportSurveyFields='false',
-#     exportDataAccessGroups='false',
-#     returnFormat='json'
-#   )
-# }
-# df_telscrn_arch_or <- jsonlite::fromJSON(json_telscrn_arch_or) %>% 
-#   dplyr::na_if('')
-# 
-# # _ _ Current UM ----
-# if (get_api_data) {
-#   json_telscrn_curr_mi <- RCurl::postForm(
-#     uri=REDCAP_API_URI,
-#     token=REDCAP_API_TOKEN_SCREEN_CURRENT_UM,
-#     content='record',
-#     format='json',
-#     type='flat',
-#     fields=fields_telscrn_curr,
-#     rawOrLabel='raw',
-#     rawOrLabelHeaders='raw',
-#     exportCheckboxLabel='false',
-#     exportSurveyFields='false',
-#     exportDataAccessGroups='false',
-#     returnFormat='json'
-#   )
-# }
-# df_telscrn_curr_mi <- jsonlite::fromJSON(json_telscrn_curr_mi) %>% 
-#   dplyr::na_if('')
-# 
-# # _ _ Current OHSU ----
-# if (get_api_data) {
-#   json_telscrn_curr_or <- RCurl::postForm(
-#     uri=REDCAP_API_URI,
-#     token=REDCAP_API_TOKEN_SCREEN_CURRENT_OHSU,
-#     content='record',
-#     format='json',
-#     type='flat',
-#     fields=fields_telscrn_curr,
-#     rawOrLabel='raw',
-#     rawOrLabelHeaders='raw',
-#     exportCheckboxLabel='false',
-#     exportSurveyFields='false',
-#     exportDataAccessGroups='false',
-#     returnFormat='json'
-#   )
-# }
-# df_telscrn_curr_or <- jsonlite::fromJSON(json_telscrn_curr_or) %>% 
-#   dplyr::na_if('')
+# _ Field definition ----
+
+# _ _ Archive fields ----
+fields_telscrn_arch_raw <-
+  c('rm_sid',     # participant ID
+    'ts_dat',     # tel screen date
+    'ts_elg',     # tel screen elibility
+    'ts_en',      # tel screen ineligibility reason
+    'ts_en2',     # tel screen inelig. 'other' text
+    'telephone_screening_complete' # tel screen form complete?
+  )
+fields_telscrn_arch <- fields_telscrn_arch_raw %>% paste(collapse = ',')
+
+# _ _ Current fields ----
+fields_telscrn_curr_raw <-
+  c('ts_sid',     # participant ID
+    'ts_dat',     # tel screen date
+    'ts_elg',     # tel screen elibility
+    'ts_en',  # tel screen ineligibility reason, dummy variables
+    'ts_en2',     # tel screen inelig. 'other' text
+    'telephone_screening_complete' # tel screen form complete?
+  )
+fields_telscrn_curr <- fields_telscrn_curr_raw %>% paste(collapse = ',')
+
+# _ API Data Retrieval ----
+
+# _ _ Archive UM ----
+if (get_api_data) {
+  json_telscrn_arch_mi <- RCurl::postForm(
+    uri=REDCAP_API_URI,
+    token=REDCAP_API_TOKEN_SCREEN_ARCHIVE_UM,
+    content='record',
+    format='json',
+    type='flat',
+    fields=fields_telscrn_arch,
+    rawOrLabel='raw',
+    rawOrLabelHeaders='raw',
+    exportCheckboxLabel='false',
+    exportSurveyFields='false',
+    exportDataAccessGroups='false',
+    returnFormat='json'
+  )
+}
+df_telscrn_arch_mi <- jsonlite::fromJSON(json_telscrn_arch_mi) %>%
+  dplyr::na_if('')
+
+# _ _ Archive OHSU ----
+if (get_api_data) {
+  json_telscrn_arch_or <- RCurl::postForm(
+    uri=REDCAP_API_URI,
+    token=REDCAP_API_TOKEN_SCREEN_ARCHIVE_OHSU,
+    content='record',
+    format='json',
+    type='flat',
+    fields=fields_telscrn_arch,
+    rawOrLabel='raw',
+    rawOrLabelHeaders='raw',
+    exportCheckboxLabel='false',
+    exportSurveyFields='false',
+    exportDataAccessGroups='false',
+    returnFormat='json'
+  )
+}
+df_telscrn_arch_or <- jsonlite::fromJSON(json_telscrn_arch_or) %>%
+  dplyr::na_if('')
+
+# _ _ Current UM ----
+if (get_api_data) {
+  json_telscrn_curr_mi <- RCurl::postForm(
+    uri=REDCAP_API_URI,
+    token=REDCAP_API_TOKEN_SCREEN_CURRENT_UM,
+    content='record',
+    format='json',
+    type='flat',
+    fields=fields_telscrn_curr,
+    rawOrLabel='raw',
+    rawOrLabelHeaders='raw',
+    exportCheckboxLabel='false',
+    exportSurveyFields='false',
+    exportDataAccessGroups='false',
+    returnFormat='json'
+  )
+}
+df_telscrn_curr_mi <- jsonlite::fromJSON(json_telscrn_curr_mi) %>%
+  dplyr::na_if('')
+
+# _ _ Current OHSU ----
+if (get_api_data) {
+  json_telscrn_curr_or <- RCurl::postForm(
+    uri=REDCAP_API_URI,
+    token=REDCAP_API_TOKEN_SCREEN_CURRENT_OHSU,
+    content='record',
+    format='json',
+    type='flat',
+    fields=fields_telscrn_curr,
+    rawOrLabel='raw',
+    rawOrLabelHeaders='raw',
+    exportCheckboxLabel='false',
+    exportSurveyFields='false',
+    exportDataAccessGroups='false',
+    returnFormat='json'
+  )
+}
+df_telscrn_curr_or <- jsonlite::fromJSON(json_telscrn_curr_or) %>%
+  dplyr::na_if('')
 
 # Temporary data source: XLSX files
 # _ Load XLSX ----

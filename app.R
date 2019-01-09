@@ -32,6 +32,7 @@ DT_OPTIONS <- list(paging = FALSE,
                    ordering = FALSE,
                    info = FALSE)
 
+
 # _ Colors ----
 
 # _ _ Recruitment Lead colors ----
@@ -87,6 +88,8 @@ colors_telscrn_en_scrn_bright <-
 #   )
 # Use when DT table selections do nothing
 colors_telscrn_en <- colors_telscrn_en_scrn_bright
+
+
 
 # **************************************** ----
 # DEFINE UI ----
@@ -297,6 +300,7 @@ ui <- dashboardPage(
   ) # -- END dashboardBody
   
 ) # -- END dashboardPage
+
 
 
 # **************************************** ----
