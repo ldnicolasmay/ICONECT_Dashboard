@@ -481,7 +481,7 @@ server <- function(input, output, session) {
         #             cols_rec_lead_summ_bright[selex])
         # }
         recruit_lead_summ_sn = recruit_lead_summ_list()[[site_name]] %>%
-          dplyr::filter(lead_categ_txt != 'TOTAL')
+          filter(lead_categ_txt != 'TOTAL')
         # Below line emulates: output$recruit_lead_summ_mi_plot <-
         output[[paste0('recruit_lead_summ_', site_name, '_plot')]] <-
           renderPlot({
@@ -511,7 +511,7 @@ server <- function(input, output, session) {
         }
         recruit_status_summ_sn = 
           recruit_status_summ_list()[[site_name]] %>% 
-          dplyr::filter(recruit_stat_txt != 'TOTAL')
+          filter(recruit_stat_txt != 'TOTAL')
         # Below line emulates: output$recruit_status_summ_mi_plot <-
         output[[paste0('recruit_status_summ_', site_name, '_plot')]] <-
           renderPlot({
@@ -533,7 +533,7 @@ server <- function(input, output, session) {
       SITE_NAMES, # SITE_NAMES <- c('mi', 'or')
       function(site_name) {
         telscrn_elg_summ_sn = telscrn_elg_summ_list()[[site_name]] %>% 
-          dplyr::filter(ts_elg_txt != 'TOTAL')
+          filter(ts_elg_txt != 'TOTAL')
         # Below line emulates: output$telscrn_elg_summ_mi_plot <-
         output[[paste0('telscrn_elg_summ_', site_name, '_plot')]] <- 
           renderPlot({
@@ -579,7 +579,7 @@ server <- function(input, output, session) {
       SITE_NAMES, # SITE_NAMES <- c('mi', 'or')
       function(site_name) {
         telscrn_en_summ_sn = telscrn_en_summ_list()[[site_name]] %>% 
-          dplyr::filter(ts_en_txt != 'TOTAL')
+          filter(ts_en_txt != 'TOTAL')
         # Below line emulates: output$telscrn_en_summ_mi_plot <-
         output[[paste0('telscrn_en_summ_', site_name, '_plot')]] <-
           renderPlot({

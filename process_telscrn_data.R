@@ -62,7 +62,7 @@ if (get_api_data) {
   )
 }
 df_telscrn_arch_mi <- jsonlite::fromJSON(json_telscrn_arch_mi) %>%
-  dplyr::na_if('')
+  na_if('')
 
 # _ _ Archive OHSU ----
 if (get_api_data) {
@@ -82,7 +82,7 @@ if (get_api_data) {
   )
 }
 df_telscrn_arch_or <- jsonlite::fromJSON(json_telscrn_arch_or) %>%
-  dplyr::na_if('')
+  na_if('')
 
 # _ _ Current UM ----
 if (get_api_data) {
@@ -102,7 +102,7 @@ if (get_api_data) {
   )
 }
 df_telscrn_curr_mi <- jsonlite::fromJSON(json_telscrn_curr_mi) %>%
-  dplyr::na_if('')
+  na_if('')
 
 # _ _ Current OHSU ----
 if (get_api_data) {
@@ -122,7 +122,7 @@ if (get_api_data) {
   )
 }
 df_telscrn_curr_or <- jsonlite::fromJSON(json_telscrn_curr_or) %>%
-  dplyr::na_if('')
+  na_if('')
 
 # Temporary data source: XLSX files
 # _ Load XLSX ----
@@ -153,22 +153,22 @@ df_telscrn_curr_or <- curr_select_fields(df_telscrn_curr_or)
 
 # _ Archive: Toss out NAs in `ts_dat` field ----
 df_telscrn_arch_mi <- df_telscrn_arch_mi %>% 
-  dplyr::filter(!is.na(ts_dat))
+  filter(!is.na(ts_dat))
 df_telscrn_arch_or <- df_telscrn_arch_or %>% 
-  dplyr::filter(!is.na(ts_dat))
+  filter(!is.na(ts_dat))
 
 # _ Current: Toss out NAs in `ts_dat` field ----
 df_telscrn_curr_mi <- df_telscrn_curr_mi %>% 
-  dplyr::filter(!is.na(ts_dat))
+  filter(!is.na(ts_dat))
 df_telscrn_curr_or <- df_telscrn_curr_or %>% 
-  dplyr::filter(!is.na(ts_dat))
+  filter(!is.na(ts_dat))
 
 # _ Resolve different `ts_sid` nomenclatures ----
 df_telscrn_arch_mi <- df_telscrn_arch_mi %>% 
-  dplyr::mutate(ts_sid = 
+  mutate(ts_sid = 
                   as.character(paste0('SCRN', as.integer(ts_sid) + 6000L)))
 df_telscrn_curr_mi <- df_telscrn_curr_mi %>% 
-  dplyr::mutate(ts_sid = 
+  mutate(ts_sid = 
                   as.character(paste0('SCRN', as.integer(ts_sid) + 6000L)))
 
 
@@ -219,7 +219,7 @@ df_telscrn <- map(df_telscrn, mutate_ts_elg_txt_field)
 telscrn_elg_summ <- map(df_telscrn,
                         ~ .x %>% 
                           group_by(ts_elg_txt) %>% 
-                          summarize(n = dplyr::n()))
+                          summarize(n = n()))
 
 # _ Eligibility status summary by week tables ----
 telscrn_elg_summ_week <- map(df_telscrn,

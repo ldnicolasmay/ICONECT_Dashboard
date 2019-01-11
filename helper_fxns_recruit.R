@@ -10,7 +10,7 @@ library(dplyr)
 # _ Remove all NA rows ----
 remove_na_rows <- function(df) {
   df %>% 
-    dplyr::filter(!is.na(`Recruitment Source`) | 
+    filter(!is.na(`Recruitment Source`) | 
                     !is.na(`Recruitment Status`) | 
                     !is.na(`Not Elig. Medical`) |
                     !is.na(`Not Elig. Social`) |
@@ -23,7 +23,7 @@ remove_na_rows <- function(df) {
 # _ Cast `Date to Call`, `Date of Initial Contact` as Date ----
 cast_date_cols <- function(df) {
   df %>% 
-    dplyr::mutate(`Date to Call` = 
+    mutate(`Date to Call` = 
                     as.Date(as.integer(`Date to Call`), 
                             origin = '1900-01-01'),
                   `Date of Initial Contact` = 
@@ -35,17 +35,17 @@ cast_date_cols <- function(df) {
 # TRUE => 1, [blank] => 0
 binarize_notelig_fields <- function(df) {
   df %>% 
-    dplyr::mutate(
-      `Not Elig. Medical` = dplyr::case_when(
+    mutate(
+      `Not Elig. Medical` = case_when(
         `Not Elig. Medical` == 'TRUE' ~ 1L,
         TRUE ~ 0L),
-      `Not Elig. Social` = dplyr::case_when(
+      `Not Elig. Social` = case_when(
         `Not Elig. Social` == 'TRUE' ~ 1L,
         TRUE ~ 0L),
-      `Not Elig. Age` = dplyr::case_when(
+      `Not Elig. Age` = case_when(
         `Not Elig. Age` == 'TRUE' ~ 1L,
         TRUE ~ 0L),
-      `Not Elig. Other` = dplyr::case_when(
+      `Not Elig. Other` = case_when(
         `Not Elig. Other` == 'TRUE' ~ 1L,
         TRUE ~ 0L)
     )
@@ -58,17 +58,17 @@ binarize_notelig_fields <- function(df) {
 # _ Create recruitment status summary table / df ----
 create_recruit_status_summ <- function(df) {
   df %>% 
-    dplyr::select(`Recruitment Status`) %>% 
-    dplyr::group_by(`Recruitment Status`) %>% 
-    dplyr::summarize(n = dplyr::n()) %>% 
-    dplyr::rename(recruit_stat_txt = `Recruitment Status`)
+    select(`Recruitment Status`) %>% 
+    group_by(`Recruitment Status`) %>% 
+    summarize(n = n()) %>% 
+    rename(recruit_stat_txt = `Recruitment Status`)
 }
 
 # _ Mutate recruit_stat_long field ----
 # Recruitment status long text categories
 mutate_recruit_stat_long <- function(df) {
   df %>% 
-    dplyr::mutate(recruit_stat_long = dplyr::case_when(
+    mutate(recruit_stat_long = case_when(
       recruit_stat_txt == 'UNR' ~ 'Unreachable',
       recruit_stat_txt == 'NNO' ~ 'Number non-operational',
       recruit_stat_txt == 'PCN' ~ 'Pending contact',
@@ -130,7 +130,7 @@ mutate_recruit_stat <- function(df) {
       'ENR' = 'Enrolled')
   # Mutate `recruit_stat` field
   df = df %>% 
-    dplyr::mutate(recruit_stat = dplyr::case_when(
+    mutate(recruit_stat = case_when(
       recruit_stat_txt == "PCN" ~ 1L,
       recruit_stat_txt == "PCF" ~ 2L,
       recruit_stat_txt == "PEG" ~ 3L,
@@ -171,7 +171,7 @@ mutate_recruit_stat <- function(df) {
   } # ... end for loop
   # Arrange df by `recruit_stat` field
   df = df %>% 
-    dplyr::arrange(as.integer(recruit_stat))
+    arrange(as.integer(recruit_stat))
   # Return df
   return(df)
 }
@@ -190,7 +190,7 @@ create_recruit_lead_summ <- function(df) {
   # Associate each recruitment status with a lead categor
   # 1 = warm, 2 = cold, 3 = dead, 4 = enrolled
   df = df %>% 
-    dplyr::mutate(lead_categ = dplyr::case_when(
+    mutate(lead_categ = case_when(
       # Warm leads
       recruit_stat == 1L ~ 1L,  # PCN
       recruit_stat == 2L ~ 1L,  # PCF
@@ -214,10 +214,10 @@ create_recruit_lead_summ <- function(df) {
     ))
   # Summarize recruit_status_summ df to recruit_lead_summ df
   df = df %>% 
-    dplyr::select(n, lead_categ) %>% 
-    dplyr::group_by(lead_categ) %>% 
-    dplyr::summarize(n = sum(n)) %>% 
-    dplyr::mutate(lead_categ_txt = dplyr::case_when(
+    select(n, lead_categ) %>% 
+    group_by(lead_categ) %>% 
+    summarize(n = sum(n)) %>% 
+    mutate(lead_categ_txt = case_when(
       lead_categ == 1 ~ 'Warm lead',
       lead_categ == 2 ~ 'Cold lead',
       lead_categ == 3 ~ 'Dead lead',
@@ -237,7 +237,7 @@ create_recruit_lead_summ <- function(df) {
   }
   # Arrange df by `lead_categ`
   df = df %>% 
-    dplyr::arrange(lead_categ)
+    arrange(lead_categ)
   # Return df
   return(df)
 }
