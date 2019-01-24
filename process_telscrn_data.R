@@ -13,7 +13,7 @@ library(purrr)
 # VARIABLES & HELPER FUNCTIONS ----
 source('config.R')
 source('helper_fxns_telscrn.R')
-get_api_data <- FALSE
+get_api_data <- TRUE
 
 # **************************************** ----
 # GET TELEPHONE SCREENING DATA ----

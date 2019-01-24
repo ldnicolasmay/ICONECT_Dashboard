@@ -20,18 +20,29 @@ source('helper_fxns_recruit.R')
 
 # Temporary data source: XLSX files
 # _ Load XLSX ----
+
+# UM / _mi
 recruit_data_mi <- readxl::read_xlsx(
   path = 'Participant Log--UM.xlsx',
   sheet = 'All_Data',
   range = 'A1:H3001',
   col_types = 'text'
 ) %>% na_if('?') %>% na_if('')
+
+# OHSU / _or
 recruit_data_or <- readxl::read_xlsx(
   path = 'Participant Log--OHSU.xlsx',
   sheet = 'All_Data',
   range = 'A1:H3001',
   col_types = 'text'
 ) %>% na_if('?') %>% na_if('')
+recruit_data_or_dead <- readxl::read_xlsx(
+  path = 'ARCHIVE DEAD LEAD Participant Log--OHSU.xlsx',
+  sheet = 'All_Data',
+  range = 'A1:H3001',
+  col_types = 'text'
+) %>% na_if('?') %>% na_if('')
+recruit_data_or <- bind_rows(recruit_data_or, recruit_data_or_dead)
 
 # _ Put recruit_data_mi, recruit_data_or dfs in a named list ----
 recruit_data <- list(mi = recruit_data_mi, 

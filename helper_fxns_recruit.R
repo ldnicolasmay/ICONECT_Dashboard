@@ -75,7 +75,7 @@ mutate_recruit_stat_long <- function(df) {
       recruit_stat_txt == 'PCF' ~ 'Pending consent',
       recruit_stat_txt == 'NE'  ~ 'Not eligible',
       recruit_stat_txt == 'NIN' ~ 'Not interested',
-      recruit_stat_txt == 'PEG' ~ 'Pending elegibility determination',
+      recruit_stat_txt == 'PEG' ~ 'Pending eligibility determination',
       recruit_stat_txt == 'PTS' ~ 'Pending telephone screen',
       recruit_stat_txt == 'TSF' ~ 'Telephone screen fail',
       recruit_stat_txt == 'PHS' ~ 'Pending home screening visit',
