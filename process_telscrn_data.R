@@ -13,7 +13,7 @@ library(purrr)
 # VARIABLES & HELPER FUNCTIONS ----
 source('config.R')
 source('helper_fxns_telscrn.R')
-get_api_data <- TRUE
+GET_API_DATA <- FALSE
 
 # **************************************** ----
 # GET TELEPHONE SCREENING DATA ----
@@ -45,7 +45,7 @@ fields_telscrn_curr <- fields_telscrn_curr_raw %>% paste(collapse = ',')
 # _ API Data Retrieval ----
 
 # _ _ Archive UM ----
-if (get_api_data) {
+if (GET_API_DATA) {
   json_telscrn_arch_mi <- RCurl::postForm(
     uri=REDCAP_API_URI,
     token=REDCAP_API_TOKEN_SCREEN_ARCHIVE_UM,
@@ -60,12 +60,12 @@ if (get_api_data) {
     exportDataAccessGroups='false',
     returnFormat='json'
   )
+  df_telscrn_arch_mi <- jsonlite::fromJSON(json_telscrn_arch_mi) %>%
+    na_if('')
 }
-df_telscrn_arch_mi <- jsonlite::fromJSON(json_telscrn_arch_mi) %>%
-  na_if('')
 
 # _ _ Archive OHSU ----
-if (get_api_data) {
+if (GET_API_DATA) {
   json_telscrn_arch_or <- RCurl::postForm(
     uri=REDCAP_API_URI,
     token=REDCAP_API_TOKEN_SCREEN_ARCHIVE_OHSU,
@@ -80,12 +80,13 @@ if (get_api_data) {
     exportDataAccessGroups='false',
     returnFormat='json'
   )
+  df_telscrn_arch_or <- jsonlite::fromJSON(json_telscrn_arch_or) %>%
+    na_if('')
 }
-df_telscrn_arch_or <- jsonlite::fromJSON(json_telscrn_arch_or) %>%
-  na_if('')
+
 
 # _ _ Current UM ----
-if (get_api_data) {
+if (GET_API_DATA) {
   json_telscrn_curr_mi <- RCurl::postForm(
     uri=REDCAP_API_URI,
     token=REDCAP_API_TOKEN_SCREEN_CURRENT_UM,
@@ -100,12 +101,13 @@ if (get_api_data) {
     exportDataAccessGroups='false',
     returnFormat='json'
   )
+  df_telscrn_curr_mi <- jsonlite::fromJSON(json_telscrn_curr_mi) %>%
+    na_if('')
 }
-df_telscrn_curr_mi <- jsonlite::fromJSON(json_telscrn_curr_mi) %>%
-  na_if('')
+
 
 # _ _ Current OHSU ----
-if (get_api_data) {
+if (GET_API_DATA) {
   json_telscrn_curr_or <- RCurl::postForm(
     uri=REDCAP_API_URI,
     token=REDCAP_API_TOKEN_SCREEN_CURRENT_OHSU,
@@ -120,9 +122,10 @@ if (get_api_data) {
     exportDataAccessGroups='false',
     returnFormat='json'
   )
+  df_telscrn_curr_or <- jsonlite::fromJSON(json_telscrn_curr_or) %>%
+    na_if('')
 }
-df_telscrn_curr_or <- jsonlite::fromJSON(json_telscrn_curr_or) %>%
-  na_if('')
+
 
 # Temporary data source: XLSX files
 # _ Load XLSX ----
