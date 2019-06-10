@@ -12,6 +12,8 @@ recursive_alt_to_for.R
 *.csv
 *.Rds
 *.png
+*.sh
 archive/*
+datadump/*
 rds/*
 screencaps/*

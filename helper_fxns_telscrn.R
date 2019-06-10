@@ -186,7 +186,8 @@ telscrn_elg_insert_na_string <- function(df) {
 
 # _ _ Factorize `ts_elg_txt` field ----
 telscrn_elg_factorize_elg_txt <- function(df) {
-  ts_elg_txt_levels = c('No', 'Not sure', 'Yes', '[NA]', 'TOTAL')
+  # ts_elg_txt_levels = c('No', 'Not sure', 'Yes', '[NA]', 'TOTAL')
+  ts_elg_txt_levels = c("[NA]", "No", "Not sure", "Yes", "TOTAL")
   df %>% 
     mutate(ts_elg_txt = readr::parse_factor(ts_elg_txt,
                                             levels = ts_elg_txt_levels))
@@ -200,7 +201,8 @@ telscrn_elg_add_proportion_column <- function(df) {
 
 # _ _ Add eligibility status total row ----
 telscrn_elg_add_total_row <- function(df) {
-  ts_elg_txt_levels = c('No', 'Not sure', 'Yes', '[NA]', 'TOTAL')
+  # ts_elg_txt_levels = c('No', 'Not sure', 'Yes', '[NA]', 'TOTAL')
+  ts_elg_txt_levels = c("[NA]", "No", "Not sure", "Yes", "TOTAL")
   df %>% 
     bind_rows(
       list(ts_elg_txt = readr::parse_factor('TOTAL',
@@ -279,15 +281,38 @@ telscrn_en_insert_na_string <- function(df) {
     ))
 }
 
+# Helper function to combine strings in character vectors
+# Given:  c("A", "B", "C")
+# Return: c("A", "B", "C", "AB", "AC", "BC", "ABC")
+combine_strings <- function(x) {
+  ret_vct <- as.character(c())
+  for (i in 1:length(x)) {
+    mtrx <- combn(x, i)
+    for (j in 1:ncol(mtrx)) {
+      ret_vct <- c(ret_vct, paste(mtrx[, j], collapse = ", "))
+    }
+  }
+  c(ret_vct)
+}
+
 # _ _ Factorize `ts_en_txt` field ----
 telscrn_en_factorize_en_txt <- function(df) {
-  ts_en_txt_levels = c('Medical',
-                       'Social',
-                       'Age',
-                       'Not Interested',
-                       'Other',
-                       '[NA]',
-                       'TOTAL')
+  # ts_en_txt_levels = c('Medical',
+  #                      'Social',
+  #                      'Age',
+  #                      'Not Interested',
+  #                      'Other',
+  #                      '[NA]',
+  #                      'TOTAL')
+  ts_en_txt_levels = 
+    combine_strings(
+      c('Medical',
+        'Social',
+        'Age',
+        'Not Interested',
+        'Other')
+    ) %>% 
+    c(., c('[NA]', 'TOTAL'))
   df %>% 
     mutate(ts_en_txt = readr::parse_factor(ts_en_txt,
                                            levels = ts_en_txt_levels))
@@ -301,13 +326,22 @@ telscrn_en_add_proportion_column <- function(df) {
 
 # _ _ Add ineligibility reason total row ----
 telscrn_en_add_total_row <- function(df) {
-  ts_en_txt_levels = c('Medical',
-                       'Social',
-                       'Age',
-                       'Not Interested',
-                       'Other',
-                       '[NA]',
-                       'TOTAL')
+  # ts_en_txt_levels = c('Medical',
+  #                      'Social',
+  #                      'Age',
+  #                      'Not Interested',
+  #                      'Other',
+  #                      '[NA]',
+  #                      'TOTAL')
+  ts_en_txt_levels = 
+    combine_strings(
+      c('Medical',
+        'Social',
+        'Age',
+        'Not Interested',
+        'Other')
+    ) %>% 
+    c(., c('[NA]', 'TOTAL'))
   df %>% 
     bind_rows(list(ts_en_txt = readr::parse_factor('TOTAL',
                                                    levels = ts_en_txt_levels),

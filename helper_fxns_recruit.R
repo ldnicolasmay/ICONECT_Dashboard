@@ -7,6 +7,28 @@ library(dplyr)
 # **************************************** ----
 # CLEAN RECRUITMENT DATA FXNS ----
 
+# Helper function
+# Function that returns a logical vector of which rows are non-empty
+locate_nonempty_records <- function(df) {
+  has_data_lgl <- logical(length = nrow(df))
+  for (i in seq_len(nrow(df))) {
+    row_list <- as.list(df[i, ])
+    if (any(!is.na(row_list))) {
+      has_data_lgl[i] <- TRUE
+    } else {
+      has_data_lgl[i] <- FALSE
+    }
+  }
+  has_data_lgl
+}
+
+# Helper function
+# Function that cleans out rows where all relevant fields are empty
+get_nonempty_records <- function(df, relevant_fields = names(df)) {
+  nonempty_rows <- locate_nonempty_records(df[, relevant_fields])
+  df[nonempty_rows, ]
+}
+
 # _ Remove all NA rows ----
 remove_na_rows <- function(df) {
   df %>% 

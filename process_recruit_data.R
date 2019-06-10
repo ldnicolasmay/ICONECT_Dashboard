@@ -5,14 +5,13 @@
 
 # **************************************** ----
 # USEFUL LIBRARIES ----
-library(dplyr)
-library(purrr)
+suppressMessages( library(dplyr) )
+suppressMessages( library(purrr) )
 
 
 # **************************************** ----
 # VARIABLES & HELPER FUNCTIONS ----
-source('config.R')
-source('helper_fxns_recruit.R')
+source("helper_fxns_recruit.R")
 
 
 # **************************************** ----
@@ -23,25 +22,31 @@ source('helper_fxns_recruit.R')
 
 # UM / _mi
 recruit_data_mi <- readxl::read_xlsx(
-  path = 'Participant Log--UM.xlsx',
-  sheet = 'All_Data',
-  range = 'A1:H3001',
-  col_types = 'text'
-) %>% na_if('?') %>% na_if('')
+  path = "Participant_Log_UM/Participant Log.xlsx",
+  sheet = "All_Data",
+  range = "A1:H10001",
+  col_types = "text"
+) %>% 
+  na_if("?") %>% na_if("") %>% 
+  get_nonempty_records()
 
 # OHSU / _or
 recruit_data_or <- readxl::read_xlsx(
-  path = 'Participant Log--OHSU.xlsx',
-  sheet = 'All_Data',
-  range = 'A1:H3001',
-  col_types = 'text'
-) %>% na_if('?') %>% na_if('')
+  path = "Participant_Log_OHSU/Participant Log.xlsx",
+  sheet = "All_Data",
+  range = "A1:H10001",
+  col_types = "text"
+) %>% na_if("?") %>% na_if("") %>% 
+  get_nonempty_records()
+
 recruit_data_or_dead <- readxl::read_xlsx(
-  path = 'ARCHIVE DEAD LEAD Participant Log--OHSU.xlsx',
-  sheet = 'All_Data',
-  range = 'A1:H3001',
-  col_types = 'text'
-) %>% na_if('?') %>% na_if('')
+  path = "Participant_log_OHSU/ARCHIVE_INACTIVE_LEADS Participant Log.xlsx",
+  sheet = "All_Data",
+  range = "A1:H10001",
+  col_types = "text"
+) %>% na_if("?") %>% na_if("") %>% 
+  get_nonempty_records()
+
 recruit_data_or <- bind_rows(recruit_data_or, recruit_data_or_dead)
 
 # _ Put recruit_data_mi, recruit_data_or dfs in a named list ----
@@ -114,10 +119,10 @@ recruit_lead_summ <- map(recruit_lead_summ, rl_add_total_row)
 # SAVE DATA TO RDS ----
 
 # Recruitment status summary tables ----
-saveRDS(recruit_status_summ, 'rds/recruit_status_summ.Rds')
+saveRDS(recruit_status_summ, "rds/recruit_status_summ.Rds")
 
 # Recruitment lead summary tables ----
-saveRDS(recruit_lead_summ, 'rds/recruit_lead_summ.Rds')
+saveRDS(recruit_lead_summ, "rds/recruit_lead_summ.Rds")
 
 
 ###@    #==--  :  --==#    @##==---==##@##==---==##@    #==--  :  --==#    @###

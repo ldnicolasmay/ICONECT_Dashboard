@@ -5,14 +5,14 @@
 
 # **************************************** ----
 # USEFUL LIBRARIES ----
-library(dplyr)
-library(purrr)
+suppressMessages( library(dplyr) )
+suppressMessages( library(purrr) )
 
 
 # **************************************** ----
 # VARIABLES & HELPER FUNCTIONS ----
-source('config.R')
-source('helper_fxns_telscrn.R')
+source("config.R")
+source("helper_fxns_telscrn.R")
 GET_API_DATA <- FALSE
 
 # **************************************** ----
@@ -22,125 +22,125 @@ GET_API_DATA <- FALSE
 
 # _ _ Archive fields ----
 fields_telscrn_arch_raw <-
-  c('rm_sid',     # participant ID
-    'ts_dat',     # tel screen date
-    'ts_elg',     # tel screen elibility
-    'ts_en',      # tel screen ineligibility reason
-    'ts_en2',     # tel screen inelig. 'other' text
-    'telephone_screening_complete' # tel screen form complete?
+  c("rm_sid",  # participant ID
+    "ts_dat",     # tel screen date
+    "ts_elg",     # tel screen elibility
+    "ts_en",      # tel screen ineligibility reason
+    "ts_en2",     # tel screen inelig. "other" text
+    "telephone_screening_complete" # tel screen form complete?
   )
-fields_telscrn_arch <- fields_telscrn_arch_raw %>% paste(collapse = ',')
+fields_telscrn_arch <- fields_telscrn_arch_raw %>% paste(collapse = ",")
 
 # _ _ Current fields ----
 fields_telscrn_curr_raw <-
-  c('ts_sid',     # participant ID
-    'ts_dat',     # tel screen date
-    'ts_elg',     # tel screen elibility
-    'ts_en',  # tel screen ineligibility reason, dummy variables
-    'ts_en2',     # tel screen inelig. 'other' text
-    'telephone_screening_complete' # tel screen form complete?
+  c("ts_sid",     # participant ID
+    "ts_dat",     # tel screen date
+    "ts_elg",     # tel screen elibility
+    "ts_en",      # tel screen ineligibility reason, dummy variables
+    "ts_en2",     # tel screen inelig. "other" text
+    "telephone_screening_complete" # tel screen form complete?
   )
-fields_telscrn_curr <- fields_telscrn_curr_raw %>% paste(collapse = ',')
+fields_telscrn_curr <- fields_telscrn_curr_raw %>% paste(collapse = ",")
 
 # _ API Data Retrieval ----
 
 # _ _ Archive UM ----
 if (GET_API_DATA) {
   json_telscrn_arch_mi <- RCurl::postForm(
-    uri=REDCAP_API_URI,
-    token=REDCAP_API_TOKEN_SCREEN_ARCHIVE_UM,
-    content='record',
-    format='json',
-    type='flat',
+    uri=OHSU_REDCAP_API_URI,
+    token=OHSU_REDCAP_API_TOKEN_SCREEN_ARCHIVE_UM,
+    content="record",
+    format="json",
+    type="flat",
     fields=fields_telscrn_arch,
-    rawOrLabel='raw',
-    rawOrLabelHeaders='raw',
-    exportCheckboxLabel='false',
-    exportSurveyFields='false',
-    exportDataAccessGroups='false',
-    returnFormat='json'
+    rawOrLabel="raw",
+    rawOrLabelHeaders="raw",
+    exportCheckboxLabel="false",
+    exportSurveyFields="false",
+    exportDataAccessGroups="false",
+    returnFormat="json"
   )
-  df_telscrn_arch_mi <- jsonlite::fromJSON(json_telscrn_arch_mi) %>%
-    na_if('')
 }
+df_telscrn_arch_mi <- jsonlite::fromJSON(json_telscrn_arch_mi) %>%
+  na_if("")
 
 # _ _ Archive OHSU ----
 if (GET_API_DATA) {
   json_telscrn_arch_or <- RCurl::postForm(
-    uri=REDCAP_API_URI,
-    token=REDCAP_API_TOKEN_SCREEN_ARCHIVE_OHSU,
-    content='record',
-    format='json',
-    type='flat',
+    uri=OHSU_REDCAP_API_URI,
+    token=OHSU_REDCAP_API_TOKEN_SCREEN_ARCHIVE_OHSU,
+    content="record",
+    format="json",
+    type="flat",
     fields=fields_telscrn_arch,
-    rawOrLabel='raw',
-    rawOrLabelHeaders='raw',
-    exportCheckboxLabel='false',
-    exportSurveyFields='false',
-    exportDataAccessGroups='false',
-    returnFormat='json'
+    rawOrLabel="raw",
+    rawOrLabelHeaders="raw",
+    exportCheckboxLabel="false",
+    exportSurveyFields="false",
+    exportDataAccessGroups="false",
+    returnFormat="json"
   )
-  df_telscrn_arch_or <- jsonlite::fromJSON(json_telscrn_arch_or) %>%
-    na_if('')
 }
+df_telscrn_arch_or <- jsonlite::fromJSON(json_telscrn_arch_or) %>%
+  na_if("")
 
 
 # _ _ Current UM ----
 if (GET_API_DATA) {
   json_telscrn_curr_mi <- RCurl::postForm(
-    uri=REDCAP_API_URI,
-    token=REDCAP_API_TOKEN_SCREEN_CURRENT_UM,
-    content='record',
-    format='json',
-    type='flat',
+    uri=OHSU_REDCAP_API_URI,
+    token=OHSU_REDCAP_API_TOKEN_SCREEN_CURRENT_UM,
+    content="record",
+    format="json",
+    type="flat",
     fields=fields_telscrn_curr,
-    rawOrLabel='raw',
-    rawOrLabelHeaders='raw',
-    exportCheckboxLabel='false',
-    exportSurveyFields='false',
-    exportDataAccessGroups='false',
-    returnFormat='json'
+    rawOrLabel="raw",
+    rawOrLabelHeaders="raw",
+    exportCheckboxLabel="false",
+    exportSurveyFields="false",
+    exportDataAccessGroups="false",
+    returnFormat="json"
   )
-  df_telscrn_curr_mi <- jsonlite::fromJSON(json_telscrn_curr_mi) %>%
-    na_if('')
 }
+df_telscrn_curr_mi <- jsonlite::fromJSON(json_telscrn_curr_mi) %>%
+  na_if("")
 
 
 # _ _ Current OHSU ----
 if (GET_API_DATA) {
   json_telscrn_curr_or <- RCurl::postForm(
-    uri=REDCAP_API_URI,
-    token=REDCAP_API_TOKEN_SCREEN_CURRENT_OHSU,
-    content='record',
-    format='json',
-    type='flat',
+    uri=OHSU_REDCAP_API_URI,
+    token=OHSU_REDCAP_API_TOKEN_SCREEN_CURRENT_OHSU,
+    content="record",
+    format="json",
+    type="flat",
     fields=fields_telscrn_curr,
-    rawOrLabel='raw',
-    rawOrLabelHeaders='raw',
-    exportCheckboxLabel='false',
-    exportSurveyFields='false',
-    exportDataAccessGroups='false',
-    returnFormat='json'
+    rawOrLabel="raw",
+    rawOrLabelHeaders="raw",
+    exportCheckboxLabel="false",
+    exportSurveyFields="false",
+    exportDataAccessGroups="false",
+    returnFormat="json"
   )
-  df_telscrn_curr_or <- jsonlite::fromJSON(json_telscrn_curr_or) %>%
-    na_if('')
 }
+df_telscrn_curr_or <- jsonlite::fromJSON(json_telscrn_curr_or) %>%
+  na_if("")
 
 
-# Temporary data source: XLSX files
-# _ Load XLSX ----
-df_telscrn_arch_mi <-
-  readr::read_csv(paste0('OCTRI5793Internetbas_DATA_',
-                         '2018-12-10_0648_Main_UM_Screening_Archive.csv'))
-df_telscrn_arch_or <-
-  readr::read_csv(paste0('OCTRI5793Internetbas_DATA_',
-                         '2018-12-10_0647_Main_OSHU_Screening_Archive.csv'))
-df_telscrn_curr_mi <-
-  readr::read_csv(paste0('OCTRI5793Internetbas_DATA_',
-                         '2018-12-16_1728_Main_UM_Screening_Current.csv'))
-df_telscrn_curr_or <-
-  readr::read_csv(paste0('OCTRI5793Internetbas_DATA_',
-                         '2018-12-10_0650_Main_OHSU_Screening_Current.csv'))
+# # Temporary data source: XLSX files
+# # _ Load XLSX ----
+# df_telscrn_arch_mi <-
+#   readr::read_csv(paste0("OCTRI5793Internetbas_DATA_",
+#                          "2018-12-10_0648_Main_UM_Screening_Archive.csv"))
+# df_telscrn_arch_or <-
+#   readr::read_csv(paste0("OCTRI5793Internetbas_DATA_",
+#                          "2018-12-10_0647_Main_OSHU_Screening_Archive.csv"))
+# df_telscrn_curr_mi <-
+#   readr::read_csv(paste0("OCTRI5793Internetbas_DATA_",
+#                          "2018-12-16_1728_Main_UM_Screening_Current.csv"))
+# df_telscrn_curr_or <-
+#   readr::read_csv(paste0("OCTRI5793Internetbas_DATA_",
+#                          "2018-12-10_0650_Main_OHSU_Screening_Current.csv"))
 
 
 # **************************************** ----
@@ -169,10 +169,10 @@ df_telscrn_curr_or <- df_telscrn_curr_or %>%
 # _ Resolve different `ts_sid` nomenclatures ----
 df_telscrn_arch_mi <- df_telscrn_arch_mi %>% 
   mutate(ts_sid = 
-                  as.character(paste0('SCRN', as.integer(ts_sid) + 6000L)))
+                  as.character(paste0("SCRN", as.integer(ts_sid) + 6000L)))
 df_telscrn_curr_mi <- df_telscrn_curr_mi %>% 
   mutate(ts_sid = 
-                  as.character(paste0('SCRN', as.integer(ts_sid) + 6000L)))
+                  as.character(paste0("SCRN", as.integer(ts_sid) + 6000L)))
 
 
 # **************************************** ----
@@ -193,8 +193,8 @@ df_telscrn_mi <- bind_arch_curr(df_telscrn_arch_mi, df_telscrn_curr_mi)
 df_telscrn_or <- bind_arch_curr(df_telscrn_arch_or, df_telscrn_curr_or)
 
 # Put df_telscrn_mi, df_telscrn_or dfs in a named list ----
-df_telscrn <- list('mi' = df_telscrn_mi,
-                   'or' = df_telscrn_or)
+df_telscrn <- list("mi" = df_telscrn_mi,
+                   "or" = df_telscrn_or)
 
 # _ Remove unneeded dfs ----
 rm(df_telscrn_arch_mi); rm(df_telscrn_arch_or)
@@ -295,16 +295,16 @@ telscrn_en_summ <- map(telscrn_en_summ, telscrn_en_add_total_row)
 # SAVE DATA TO RDS ----
 
 # _ Eligibility status summary tables ----
-saveRDS(telscrn_elg_summ, 'rds/telscrn_elg_summ.Rds')
+saveRDS(telscrn_elg_summ, "rds/telscrn_elg_summ.Rds")
 
 # _ Eligibility status summary by week tables ----
-saveRDS(telscrn_elg_summ_week, 'rds/telscrn_elg_summ_week.Rds')
+saveRDS(telscrn_elg_summ_week, "rds/telscrn_elg_summ_week.Rds")
 
 # _ Ineligibility reason summary tables ----
-saveRDS(telscrn_en_summ, 'rds/telscrn_en_summ.Rds')
+saveRDS(telscrn_en_summ, "rds/telscrn_en_summ.Rds")
 
 # _ Ineligibility reason summary by week tables ----
-saveRDS(telscrn_en_summ_week, 'rds/telscrn_en_summ_week.Rds')
+saveRDS(telscrn_en_summ_week, "rds/telscrn_en_summ_week.Rds")
 
 
 ###@    #==--  :  --==#    @##==---==##@##==---==##@    #==--  :  --==#    @###
