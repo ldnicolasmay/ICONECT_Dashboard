@@ -13,7 +13,7 @@ suppressMessages( library(purrr) )
 # VARIABLES & HELPER FUNCTIONS ----
 source("config.R")
 source("helper_fxns_telscrn.R")
-GET_API_DATA <- FALSE
+GET_API_DATA <- TRUE
 
 # **************************************** ----
 # GET TELEPHONE SCREENING DATA ----
@@ -62,6 +62,7 @@ if (GET_API_DATA) {
   )
 }
 df_telscrn_arch_mi <- jsonlite::fromJSON(json_telscrn_arch_mi) %>%
+  as_tibble() %>% 
   na_if("")
 
 # _ _ Archive OHSU ----
@@ -82,6 +83,7 @@ if (GET_API_DATA) {
   )
 }
 df_telscrn_arch_or <- jsonlite::fromJSON(json_telscrn_arch_or) %>%
+  as_tibble() %>% 
   na_if("")
 
 
@@ -103,6 +105,7 @@ if (GET_API_DATA) {
   )
 }
 df_telscrn_curr_mi <- jsonlite::fromJSON(json_telscrn_curr_mi) %>%
+  as_tibble() %>% 
   na_if("")
 
 
@@ -124,6 +127,7 @@ if (GET_API_DATA) {
   )
 }
 df_telscrn_curr_or <- jsonlite::fromJSON(json_telscrn_curr_or) %>%
+  as_tibble() %>% 
   na_if("")
 
 
@@ -169,10 +173,10 @@ df_telscrn_curr_or <- df_telscrn_curr_or %>%
 # _ Resolve different `ts_sid` nomenclatures ----
 df_telscrn_arch_mi <- df_telscrn_arch_mi %>% 
   mutate(ts_sid = 
-                  as.character(paste0("SCRN", as.integer(ts_sid) + 6000L)))
+           as.character(paste0("SCRN", as.integer(ts_sid) + 6000L)))
 df_telscrn_curr_mi <- df_telscrn_curr_mi %>% 
   mutate(ts_sid = 
-                  as.character(paste0("SCRN", as.integer(ts_sid) + 6000L)))
+           as.character(paste0("SCRN", as.integer(ts_sid) + 6000L)))
 
 
 # **************************************** ----

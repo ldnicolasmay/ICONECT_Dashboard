@@ -5,11 +5,11 @@
 
 # **************************************** ----
 # LOAD LIBRARIES ----
-library(shiny)
-library(shinydashboard)
-library(dplyr)
-library(ggplot2)
-library(DT)
+suppressMessages( library(shiny)          )
+suppressMessages( library(shinydashboard) )
+suppressMessages( library(dplyr)          )
+suppressMessages( library(ggplot2)        )
+suppressMessages( library(DT)             )
 
 
 # **************************************** ----
@@ -296,7 +296,7 @@ ui <- dashboardPage(
       #   tabName = "blah3",
       #   h1("Blah 3")
       # ) # -- END Blah 3 tabItem
-      
+
     ) # -- END tabItems
     
   ) # -- END dashboardBody
@@ -310,7 +310,7 @@ ui <- dashboardPage(
 server <- function(input, output, session) {
   
   # _ Load Data ----
-  
+
   # _ _ Load recruitment status summary data ----
   recruit_status_summ_list <- reactiveFileReader(
     intervalMillis = 1000 * 60 * 60, # 1 hour
@@ -318,7 +318,7 @@ server <- function(input, output, session) {
     session = NULL,
     readFunc = readRDS
   )
-  
+
   # _ _ Load recruitment lead summary data ----
   recruit_lead_summ_list <- reactiveFileReader(
     intervalMillis = 1000 * 60 * 60, # 1 hour
@@ -326,7 +326,7 @@ server <- function(input, output, session) {
     session = NULL,
     readFunc = readRDS
   )
-  
+
   # _ _ Load telscrn eligibility summary data ----
   telscrn_elg_summ_list <- reactiveFileReader(
     intervalMillis = 1000 * 60 * 60, # 1 hour
@@ -334,7 +334,7 @@ server <- function(input, output, session) {
     session = NULL,
     readFunc = readRDS
   )
-  
+
   # _ _ Load telscrn eligibility summary by week data ----
   telscrn_elg_summ_week_list <- reactiveFileReader(
     intervalMillis = 1000 * 60 * 60, # 1 hour
@@ -342,7 +342,7 @@ server <- function(input, output, session) {
     session = NULL,
     readFunc = readRDS
   )
-  
+
   # _ _ Load telscrn ineligibility reason summary data ----
   telscrn_en_summ_list <- reactiveFileReader(
     intervalMillis = 1000 * 60 * 60, # 1 hour
@@ -350,7 +350,7 @@ server <- function(input, output, session) {
     session = NULL,
     readFunc = readRDS
   )
-  
+
   # _ _ Load telscrn ineligibility reason summary by week data ----
   telscrn_en_summ_week_list <- reactiveFileReader(
     intervalMillis = 1000 * 60 * 60, # 1 hour
@@ -358,11 +358,11 @@ server <- function(input, output, session) {
     session = NULL,
     readFunc = readRDS
   )
-  
+
   # _ Render Tables ----
-  
+
   # _ _ Recruitment tables ----
-  
+
   # _ _ _ Recruitment Status tables ----
   # Using `observe({ lapply(...) })` fxnl prog approach allows for extensiblity
   observe({
@@ -390,7 +390,7 @@ server <- function(input, output, session) {
           })
       })
   })
-  
+
   # _ _ _ Recruitment Lead tables ----
   # Using `observe({ lapply(...) })` fxnl prog approach allows for extensiblity
   observe({
@@ -414,9 +414,9 @@ server <- function(input, output, session) {
           })
       })
   })
-  
+
   # _ _ Telephone Screening tables ----
-  
+
   # _ _ _ Eligibility tables ----
   # Using `observe({ lapply(...) })` fxnl prog approach allows for extensiblity
   observe({
@@ -439,7 +439,7 @@ server <- function(input, output, session) {
           })
       })
   })
-  
+
   # _ _ _ Ineligibility tables ----
   # Using `observe({ lapply(...) })` fxnl prog approach allows for extensiblity
   observe({
@@ -462,11 +462,11 @@ server <- function(input, output, session) {
           })
       })
   })
-  
+
   # _ Render Plots ----
-  
+
   # _ _ Recruitment Plots ----
-  
+
   # _ _ _ Recruitment Lead plots ----
   # Using `observe({ lapply(...) })` fxnl prog approach allows for extensiblity
   observe({
@@ -478,11 +478,11 @@ server <- function(input, output, session) {
         #                       site_name, "_tbl_rows_selected")]]
         # if (length(selex)) {
         #   cols_rec_lead_summ =
-        #     replace(cols_rec_lead_summ, 
-        #             selex, 
+        #     replace(cols_rec_lead_summ,
+        #             selex,
         #             cols_rec_lead_summ_bright[selex])
         # }
-        recruit_lead_summ_sn = recruit_lead_summ_list()[[site_name]] %>%
+        recruit_lead_summ_sn <- recruit_lead_summ_list()[[site_name]] %>%
           filter(lead_categ_txt != "TOTAL")
         # Below line emulates: output$recruit_lead_summ_mi_plot <-
         output[[paste0("recruit_lead_summ_", site_name, "_plot")]] <-
@@ -495,7 +495,7 @@ server <- function(input, output, session) {
           }, height = PLOT_HEIGHT_LEAD)
       })
   })
-  
+
   # _ _ _ Recruitment Status plots ----
   # Using `observe({ lapply(...) })` fxnl prog approach allows for extensiblity
   observe({
@@ -503,16 +503,16 @@ server <- function(input, output, session) {
       SITE_NAMES, # SITE_NAMES <- c("mi", "or")
       function(site_name) {
         # `selex` used for interactive selection from table to pie plot
-        selex = input[[paste0("recruit_status_summ_", 
+        selex = input[[paste0("recruit_status_summ_",
                               site_name, "_tbl_rows_selected")]]
         if (length(selex)) {
           cols_rec_stat_summ =
-            replace(cols_rec_stat_summ, 
-                    selex, 
+            replace(cols_rec_stat_summ,
+                    selex,
                     cols_rec_stat_summ_bright[selex])
         }
-        recruit_status_summ_sn = 
-          recruit_status_summ_list()[[site_name]] %>% 
+        recruit_status_summ_sn =
+          recruit_status_summ_list()[[site_name]] %>%
           filter(recruit_stat_txt != "TOTAL")
         # Below line emulates: output$recruit_status_summ_mi_plot <-
         output[[paste0("recruit_status_summ_", site_name, "_plot")]] <-
@@ -525,19 +525,19 @@ server <- function(input, output, session) {
           }, height = PLOT_HEIGHT_SUMM)
       })
   })
-  
+
   # _ _ Telephone Screening plots ----
-  
+
   # _ _ _ Eligibility Status plots ----
   # Using `observe({ lapply(...) })` fxnl prog approach allows for extensiblity
   observe({
     lapply(
       SITE_NAMES, # SITE_NAMES <- c("mi", "or")
       function(site_name) {
-        telscrn_elg_summ_sn = telscrn_elg_summ_list()[[site_name]] %>% 
+        telscrn_elg_summ_sn = telscrn_elg_summ_list()[[site_name]] %>%
           filter(ts_elg_txt != "TOTAL")
         # Below line emulates: output$telscrn_elg_summ_mi_plot <-
-        output[[paste0("telscrn_elg_summ_", site_name, "_plot")]] <- 
+        output[[paste0("telscrn_elg_summ_", site_name, "_plot")]] <-
           renderPlot({
             pie(x = telscrn_elg_summ_sn$n,
                 labels = paste0(telscrn_elg_summ_sn$ts_elg_txt, ", ",
@@ -548,7 +548,7 @@ server <- function(input, output, session) {
           }, height = PLOT_HEIGHT_LEAD)
       })
   })
-  
+
   # _ _ _ Weekly Eligibility Status plots ----
   # Using `observe({ lapply(...) })` fxnl prog approach allows for extensiblity
   observe({
@@ -563,7 +563,7 @@ server <- function(input, output, session) {
               geom_bar(stat = "identity") +
               scale_x_date(breaks = seq(TS_DAT_START, Sys.Date(), by = 7),
                            limits = c(TS_DAT_START-4, Sys.Date())) +
-              theme(axis.text.x = 
+              theme(axis.text.x =
                       element_text(angle = 45, vjust = 1, hjust = 1)) +
               labs(x = "Week of Telephone Screening",
                    y = "Count",
@@ -573,14 +573,14 @@ server <- function(input, output, session) {
           }, height = PLOT_HEIGHT_LEAD)
       })
   })
-  
+
   # _ _ _ Ineligibility Reason plots ----
   # Using `observe({ lapply(...) })` fxnl prog approach allows for extensiblity
   observe({
     lapply(
       SITE_NAMES, # SITE_NAMES <- c("mi", "or")
       function(site_name) {
-        telscrn_en_summ_sn = telscrn_en_summ_list()[[site_name]] %>% 
+        telscrn_en_summ_sn = telscrn_en_summ_list()[[site_name]] %>%
           filter(ts_en_txt != "TOTAL")
         # Below line emulates: output$telscrn_en_summ_mi_plot <-
         output[[paste0("telscrn_en_summ_", site_name, "_plot")]] <-
@@ -594,14 +594,14 @@ server <- function(input, output, session) {
           }, height = PLOT_HEIGHT_LEAD)
       })
   })
-  
+
   # _ _ _ Weekly Ineligibility Reason plots ----
   # Using `observe({ lapply(...) })` fxnl prog approach allows for extensiblity
   observe({
     lapply(
       SITE_NAMES,
       function(site_name) {
-        # Below line emulates: output$telscrn_en_summ_week_mi_plot <- 
+        # Below line emulates: output$telscrn_en_summ_week_mi_plot <-
         output[[paste0("telscrn_en_summ_week_", site_name, "_plot")]] <-
           renderPlot({
             ggplot(data = telscrn_en_summ_week_list()[[site_name]],
@@ -609,7 +609,7 @@ server <- function(input, output, session) {
               geom_bar(stat = "identity") +
               scale_x_date(breaks = seq(TS_DAT_START, Sys.Date(), by = 7),
                            limits = c(TS_DAT_START-4, Sys.Date())) +
-              theme(axis.text.x = 
+              theme(axis.text.x =
                       element_text(angle = 45, vjust = 1, hjust = 1)) +
               labs(x = "Week of Telephone Screening",
                    y = "Count",
